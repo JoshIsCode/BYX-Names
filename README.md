@@ -9,50 +9,49 @@ automatically from this branch via GitHub Pages — see below).
 
 ## Modes
 
-- **🖼️ Gallery** — a grid of faces. Tap a face to flip it open in place
-  and reveal major, housing, and hometown, right next to the others.
-  Multiple cards can stay open at once. Adjust the number of columns
-  with the slider, and search/filter by name, major, housing, or
-  hometown.
-- **🗂️ Flashcards** — one person at a time. Tap the card to flip
-  between the face and the details. Step through with Prev/Next or
-  shuffle the deck.
-- **✅ Test** — quiz mode. Shows a face and asks for first name, last
+- **Gallery** — a grid of plain text cards (name, major, housing,
+  hometown — no photo). Tap a card to expand it in place and reveal
+  the details below the name. Multiple cards can stay open at once.
+  Adjust the number of columns (1–4) with the slider, and search/filter
+  by name, major, housing, or hometown.
+- **Flashcards** — one person at a time, photo included. Tap the card
+  to flip between the face and the details. Step through with
+  Previous/Next or shuffle the deck.
+- **Test** — quiz mode. Shows a face and asks for first name, last
   name, major, housing, and hometown (multiple choice), then moves to
   the next person. Choose a short round or the whole roster, and get a
   score + missed-answer review at the end.
-- **🔗 Match** — a matching game: tap a face, then tap the name you
+- **Match** — a matching game: tap a face, then tap the name you
   think goes with it. Pick a round size and start a new round anytime.
-- **📋 List** — a plain, searchable, sortable reference table of
+- **List** — a plain, searchable, sortable reference table of
   everyone's info, for quick lookup or old-school studying.
 
-## Adding real data
+## Roster data
 
-Right now `js/data.js` is filled with **placeholder** names, majors,
-housing, and hometowns so the app can be built and tested before the
-real roster is available.
+`js/data.js` holds the BYX Pledge Class 2026 roster (name, major,
+housing, hometown, photo) parsed from `BYX_Pledge_Class_2026.pdf`.
+Photos live in `assets/photos/`, resized/compressed for the web. If a
+photo is ever missing or fails to load, the app automatically falls
+back to a plain initials avatar, so nothing breaks.
 
-To load the real roster:
+To update or correct an entry, edit its object in the `PEOPLE` array in
+`js/data.js` — each one follows this shape:
 
-1. Open `js/data.js`.
-2. Replace the entries in the `PEOPLE` array, keeping the same shape:
+```js
+{
+  id:        1,
+  firstName: "Jane",
+  lastName:  "Doe",
+  major:     "Biology",
+  housing:   "Founders Hall",
+  hometown:  "Dallas, TX",
+  photo:     "assets/photos/jane-doe.jpg" // or "" for a placeholder avatar
+}
+```
 
-   ```js
-   {
-     id:        1,
-     firstName: "Jane",
-     lastName:  "Doe",
-     major:     "Biology",
-     housing:   "Founders Hall",
-     hometown:  "Dallas, TX",
-     photo:     "assets/photos/jane-doe.jpg" // or "" for a placeholder avatar
-   }
-   ```
-
-3. (Optional) Drop real photos into `assets/photos/` and point `photo`
-   at the file. If a photo is missing or fails to load, the app
-   automatically falls back to a colored initials avatar, so nothing
-   breaks while photos are still being collected.
+> **Note:** this repo (and the GitHub Pages site below, once enabled)
+> contains real names and photos of pledge class members. Keep the
+> repository private, or check with the group, before making it public.
 
 ## Running locally
 

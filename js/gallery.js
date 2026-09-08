@@ -1,8 +1,9 @@
 /**
- * Gallery mode: a grid of faces. Click a face to expand it in place
- * into a flashcard-style panel showing name + details. Any number of
- * cards can be expanded at once ("all next to each other"). Column
- * count is user-adjustable and remembered.
+ * Gallery mode: a grid of plain text cards (name, major, housing,
+ * hometown — no photo). Click a card to expand it in place and reveal
+ * the details below the name. Any number of cards can be expanded at
+ * once ("all next to each other"). Column count is user-adjustable
+ * (1-4) and remembered.
  */
 
 const Gallery = (() => {
@@ -16,7 +17,7 @@ const Gallery = (() => {
     search = document.getElementById("gallery-search");
 
     const savedCols = parseInt(localStorage.getItem("byx-gallery-cols"), 10);
-    colSlider.value = Number.isFinite(savedCols) ? savedCols : 5;
+    colSlider.value = Number.isFinite(savedCols) ? savedCols : 3;
     applyColumns();
 
     colSlider.addEventListener("input", () => {
@@ -62,7 +63,6 @@ const Gallery = (() => {
     const card = Utils.el("button", "gallery-card");
     card.type = "button";
     card.setAttribute("aria-expanded", "false");
-    card.appendChild(Utils.buildFace(person, { size: "lg" }));
 
     const label = Utils.el("div", "gallery-card-label", Utils.fullName(person));
     card.appendChild(label);

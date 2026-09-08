@@ -3,12 +3,6 @@
  */
 
 const Utils = (() => {
-  const AVATAR_COLORS = [
-    "#4f6df5", "#f5734f", "#2fb787", "#c34fd6",
-    "#e0a52c", "#3fa9d8", "#e35b7a", "#7a63e6",
-    "#4fb3a9", "#d8783f", "#5c9e2f", "#c74f8e",
-  ];
-
   function fullName(person) {
     return `${person.firstName} ${person.lastName}`;
   }
@@ -17,24 +11,13 @@ const Utils = (() => {
     return `${person.firstName[0] ?? ""}${person.lastName[0] ?? ""}`.toUpperCase();
   }
 
-  // Deterministic color per person so the same avatar always looks the same.
-  function colorFor(person) {
-    const str = fullName(person);
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
-    }
-    return AVATAR_COLORS[hash % AVATAR_COLORS.length];
-  }
-
   /**
    * Builds a face element for a person: a real photo if `photo` is set
-   * and loads successfully, otherwise a colored initials avatar.
+   * and loads successfully, otherwise a plain initials avatar.
    */
   function buildFace(person, { size = "md" } = {}) {
     const wrap = document.createElement("div");
     wrap.className = `face face-${size}`;
-    wrap.style.setProperty("--face-color", colorFor(person));
 
     if (person.photo) {
       const img = document.createElement("img");
@@ -82,5 +65,5 @@ const Utils = (() => {
     return e;
   }
 
-  return { fullName, initials, colorFor, buildFace, shuffle, distractors, el };
+  return { fullName, initials, buildFace, shuffle, distractors, el };
 })();

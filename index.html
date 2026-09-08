@@ -14,11 +14,11 @@
 </header>
 
 <nav class="mode-tabs" aria-label="Learning mode">
-  <button class="mode-tab" data-mode="gallery" type="button">🖼️ Gallery</button>
-  <button class="mode-tab" data-mode="flashcards" type="button">🗂️ Flashcards</button>
-  <button class="mode-tab" data-mode="quiz" type="button">✅ Test</button>
-  <button class="mode-tab" data-mode="match" type="button">🔗 Match</button>
-  <button class="mode-tab" data-mode="list" type="button">📋 List</button>
+  <button class="mode-tab" data-mode="gallery" type="button">Gallery</button>
+  <button class="mode-tab" data-mode="flashcards" type="button">Flashcards</button>
+  <button class="mode-tab" data-mode="quiz" type="button">Test</button>
+  <button class="mode-tab" data-mode="match" type="button">Match</button>
+  <button class="mode-tab" data-mode="list" type="button">List</button>
 </nav>
 
 <main>
@@ -28,11 +28,11 @@
     <div class="panel-controls">
       <input id="gallery-search" class="search-input" type="search" placeholder="Search name, major, housing, hometown…" />
       <label class="columns-control">
-        Columns: <span id="gallery-columns-label">5</span>
-        <input id="gallery-columns" type="range" min="2" max="8" step="1" />
+        Columns: <span id="gallery-columns-label">3</span>
+        <input id="gallery-columns" type="range" min="1" max="4" step="1" />
       </label>
     </div>
-    <p class="hint">Tap a face to flip it open — tap again to close. Multiple can stay open at once.</p>
+    <p class="hint">Tap a card to open it — tap again to close. Multiple can stay open at once.</p>
     <div id="gallery-grid" class="gallery-grid"></div>
   </section>
 
@@ -46,9 +46,9 @@
     </div>
     <p id="flashcard-progress" class="hint center"></p>
     <div class="flashcard-controls">
-      <button id="flashcard-prev" class="btn" type="button">◀ Prev</button>
-      <button id="flashcard-shuffle" class="btn" type="button">🔀 Shuffle</button>
-      <button id="flashcard-next" class="btn" type="button">Next ▶</button>
+      <button id="flashcard-prev" class="btn" type="button">Previous</button>
+      <button id="flashcard-shuffle" class="btn" type="button">Shuffle</button>
+      <button id="flashcard-next" class="btn" type="button">Next</button>
     </div>
   </section>
 
@@ -84,7 +84,7 @@
       <button id="quiz-restart-2" class="btn btn-primary" type="button">Try Again</button>
     </div>
 
-    <button id="quiz-restart" class="btn quiz-abandon" type="button" title="Back to setup">↺ Restart setup</button>
+    <button id="quiz-restart" class="btn quiz-abandon" type="button" title="Back to setup">Back to setup</button>
   </section>
 
   <!-- ================= MATCH MODE ================= -->
@@ -96,7 +96,7 @@
         <label><input type="radio" name="match-size" value="8" checked /> 8</label>
         <label><input type="radio" name="match-size" value="12" /> 12</label>
       </fieldset>
-      <button id="match-new-round" class="btn" type="button">🔁 New Round</button>
+      <button id="match-new-round" class="btn" type="button">New Round</button>
     </div>
     <p class="hint">Tap a face, then tap the name you think matches.</p>
     <p id="match-status" class="hint center"></p>

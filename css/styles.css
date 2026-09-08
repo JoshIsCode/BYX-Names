@@ -1,29 +1,40 @@
 :root {
-  --bg: #f6f7fb;
+  --bg: #f4f4f3;
   --surface: #ffffff;
-  --border: #e1e4ec;
-  --text: #1c2130;
-  --text-muted: #6b7280;
-  --primary: #4f6df5;
-  --primary-dark: #3951c6;
-  --danger: #e5484d;
-  --success: #2fb787;
-  --radius: 14px;
-  --shadow: 0 2px 10px rgba(20, 25, 40, 0.06);
+  --border: #e2e1de;
+  --text: #1a1a1a;
+  --text-muted: #757570;
+  --ink: #1a1a1a;
+  --ink-contrast: #ffffff;
+  --success: #3d7a5c;
+  --danger: #a8433a;
+  --radius: 10px;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.07);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #12141c;
-    --surface: #1b1e29;
-    --border: #2b2f3d;
-    --text: #eef0f6;
-    --text-muted: #9aa1b2;
-    --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+    --bg: #171716;
+    --surface: #211f1e;
+    --border: #35332f;
+    --text: #ededea;
+    --text-muted: #9a9892;
+    --ink: #ededea;
+    --ink-contrast: #171716;
+    --success: #7fbf9c;
+    --danger: #d98a83;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
   }
 }
 
 * { box-sizing: border-box; }
+
+/* The hidden attribute must always win, even over a class that sets
+   its own `display` (e.g. `display: flex`) on the same element. */
+[hidden] { display: none !important; }
+
+/* Keep native form controls monochrome instead of the browser's default blue. */
+input[type="radio"], input[type="checkbox"], input[type="range"] { accent-color: var(--ink); }
 
 body {
   margin: 0;
@@ -34,10 +45,10 @@ body {
 
 .app-header {
   text-align: center;
-  padding: 20px 16px 8px;
+  padding: 22px 16px 10px;
 }
-.app-header h1 { margin: 0; font-size: 1.6rem; }
-.app-subtitle { margin: 4px 0 0; color: var(--text-muted); font-size: 0.9rem; }
+.app-header h1 { margin: 0; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; }
+.app-subtitle { margin: 4px 0 0; color: var(--text-muted); font-size: 0.88rem; }
 
 .mode-tabs {
   position: sticky;
@@ -53,19 +64,19 @@ body {
 }
 .mode-tab {
   flex: 0 0 auto;
-  padding: 8px 14px;
+  padding: 8px 16px;
   border: 1px solid var(--border);
   border-radius: 999px;
   background: var(--surface);
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   cursor: pointer;
   white-space: nowrap;
 }
 .mode-tab.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--ink-contrast);
 }
 
 main {
@@ -92,7 +103,7 @@ main {
 .search-input {
   flex: 1 1 220px;
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
@@ -103,26 +114,26 @@ main {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text-muted);
   white-space: nowrap;
 }
-.columns-control input[type="range"] { width: 120px; }
+.columns-control input[type="range"] { width: 120px; accent-color: var(--ink); }
 
 .btn {
   padding: 10px 16px;
-  border-radius: 10px;
+  border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   cursor: pointer;
 }
 .btn:active { transform: translateY(1px); }
 .btn-primary {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: #fff;
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--ink-contrast);
   font-weight: 600;
 }
 
@@ -130,50 +141,56 @@ main {
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(var(--gallery-cols, 5), minmax(0, 1fr));
+  grid-template-columns: repeat(var(--gallery-cols, 3), minmax(0, 1fr));
   gap: 12px;
 }
 @media (max-width: 640px) {
-  .gallery-grid { grid-template-columns: repeat(min(var(--gallery-cols, 5), 3), minmax(0, 1fr)); }
+  .gallery-grid { grid-template-columns: repeat(min(var(--gallery-cols, 3), 3), minmax(0, 1fr)); }
+}
+@media (max-width: 420px) {
+  .gallery-grid { grid-template-columns: repeat(min(var(--gallery-cols, 3), 2), minmax(0, 1fr)); }
 }
 
 .gallery-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  justify-content: center;
   gap: 8px;
-  padding: 12px 8px;
+  aspect-ratio: 4 / 3;
+  padding: 16px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface);
   box-shadow: var(--shadow);
   cursor: pointer;
-  text-align: center;
+  text-align: left;
+}
+.gallery-card.expanded {
+  aspect-ratio: auto;
+  justify-content: flex-start;
+  border-color: var(--text);
 }
 .gallery-card-label {
-  font-size: 0.82rem;
-  font-weight: 600;
-  line-height: 1.2;
+  font-size: 1.1rem;
+  font-weight: 700;
+  line-height: 1.25;
   word-break: break-word;
 }
 .gallery-card-details {
-  width: 100%;
-  border-top: 1px dashed var(--border);
+  border-top: 1px solid var(--border);
   padding-top: 8px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
-.gallery-card.expanded { border-color: var(--primary); }
 
-.detail-row { display: flex; flex-direction: column; font-size: 0.78rem; text-align: left; }
-.detail-label { color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; font-size: 0.65rem; }
+.detail-row { display: flex; flex-direction: column; font-size: 0.82rem; }
+.detail-label { color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; font-size: 0.68rem; }
 .detail-value { font-weight: 500; }
 
-/* ---------------- Faces / avatars ---------------- */
+/* ---------------- Faces / avatars (flashcards, test, match) ---------------- */
 
 .face {
-  --face-color: #4f6df5;
   border-radius: 50%;
   overflow: hidden;
   display: flex;
@@ -183,8 +200,8 @@ main {
 }
 .face img { width: 100%; height: 100%; object-fit: cover; }
 .face.face-fallback {
-  background: var(--face-color);
-  color: #fff;
+  background: var(--text-muted);
+  color: var(--surface);
   font-weight: 700;
 }
 .face-sm { width: 40px; height: 40px; font-size: 0.9rem; }
@@ -246,13 +263,13 @@ main {
 .quiz-size-choice legend { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 6px; }
 
 .quiz-progress-track {
-  height: 8px;
+  height: 6px;
   border-radius: 999px;
   background: var(--border);
   overflow: hidden;
   margin-bottom: 6px;
 }
-.quiz-progress-bar { height: 100%; background: var(--primary); transition: width 0.2s ease; }
+.quiz-progress-bar { height: 100%; background: var(--ink); transition: width 0.2s ease; }
 
 .quiz-face { display: flex; justify-content: center; margin: 16px 0 6px; }
 .quiz-name-reveal { text-align: center; font-weight: 700; font-size: 1.1rem; min-height: 1.4em; }
@@ -270,15 +287,15 @@ main {
 }
 .quiz-option {
   padding: 14px;
-  border-radius: 10px;
+  border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
   font-size: 0.95rem;
   cursor: pointer;
 }
-.quiz-option.correct { background: var(--success); border-color: var(--success); color: #fff; }
-.quiz-option.incorrect { background: var(--danger); border-color: var(--danger); color: #fff; }
+.quiz-option.correct { background: var(--success); border-color: var(--success); color: var(--ink-contrast); }
+.quiz-option.incorrect { background: var(--danger); border-color: var(--danger); color: var(--ink-contrast); }
 
 .quiz-score-headline { font-size: 1.8rem; font-weight: 700; margin: 8px 0 16px; }
 .quiz-missed-list { text-align: left; margin-bottom: 20px; }
@@ -304,7 +321,7 @@ main {
 .match-column { display: flex; flex-direction: column; gap: 8px; }
 .match-tile {
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--text);
@@ -315,9 +332,9 @@ main {
   gap: 8px;
 }
 .match-face-tile { justify-content: center; }
-.match-tile.selected { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary); }
-.match-tile.matched { background: var(--success); border-color: var(--success); color: #fff; opacity: 0.85; cursor: default; }
-.match-tile.wrong { background: var(--danger); border-color: var(--danger); color: #fff; }
+.match-tile.selected { border: 2px solid var(--text); }
+.match-tile.matched { background: var(--success); border-color: var(--success); color: var(--ink-contrast); opacity: 0.85; cursor: default; }
+.match-tile.wrong { background: var(--danger); border-color: var(--danger); color: var(--ink-contrast); }
 
 /* ---------------- List mode ---------------- */
 

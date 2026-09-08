@@ -1,51 +1,85 @@
 /**
- * PLACEHOLDER ROSTER DATA
- * ------------------------------------------------------------------
- * This is sample/placeholder data so the app can be built and tested
- * before the real roster (from the slideshow) is available.
+ * BYX Pledge Class 2026 roster.
  *
- * To load the real roster later, replace the PEOPLE array below with
- * real entries in the same shape:
+ * Source: BYX_Pledge_Class_2026.pdf. Photos live in assets/photos/.
+ * If a photo is missing or fails to load, the app automatically falls
+ * back to a colored initials avatar — see js/utils.js.
  *
- *   {
- *     id:        unique number or string,
- *     firstName: "Jane",
- *     lastName:  "Doe",
- *     major:     "Biology",
- *     housing:   "Founders Hall",
- *     hometown:  "Dallas, TX",
- *     photo:     "assets/photos/jane-doe.jpg"   // optional, leave "" for a placeholder avatar
- *   }
- *
- * Drop real photo files into assets/photos/ and point `photo` at them.
- * If `photo` is empty or fails to load, the app automatically falls
- * back to a colored initials avatar, so nothing breaks while photos
- * are still being collected.
+ * Entry shape:
+ *   { id, firstName, lastName, major, housing, hometown, photo }
  */
 
 const PEOPLE = [
-  { id: 1, firstName: "Avery", lastName: "Collins", major: "Computer Science", housing: "Sigma House", hometown: "Austin, TX", photo: "" },
-  { id: 2, firstName: "Jordan", lastName: "Mitchell", major: "Mechanical Engineering", housing: "Founders Hall", hometown: "Denver, CO", photo: "" },
-  { id: 3, firstName: "Riley", lastName: "Bennett", major: "Biology", housing: "Sigma House", hometown: "Portland, OR", photo: "" },
-  { id: 4, firstName: "Casey", lastName: "Foster", major: "Business Administration", housing: "The Lodge", hometown: "Nashville, TN", photo: "" },
-  { id: 5, firstName: "Morgan", lastName: "Hughes", major: "Psychology", housing: "Founders Hall", hometown: "Columbus, OH", photo: "" },
-  { id: 6, firstName: "Reagan", lastName: "Sanders", major: "Civil Engineering", housing: "The Lodge", hometown: "Tulsa, OK", photo: "" },
-  { id: 7, firstName: "Peyton", lastName: "Ramirez", major: "Finance", housing: "Sigma House", hometown: "San Diego, CA", photo: "" },
-  { id: 8, firstName: "Rowan", lastName: "Coleman", major: "Kinesiology", housing: "The Annex", hometown: "Little Rock, AR", photo: "" },
-  { id: 9, firstName: "Dakota", lastName: "Reyes", major: "Chemistry", housing: "Founders Hall", hometown: "Wichita, KS", photo: "" },
-  { id: 10, firstName: "Skyler", lastName: "Barnes", major: "Marketing", housing: "The Lodge", hometown: "Baton Rouge, LA", photo: "" },
-  { id: 11, firstName: "Emerson", lastName: "Wallace", major: "Computer Science", housing: "The Annex", hometown: "Springfield, MO", photo: "" },
-  { id: 12, firstName: "Hayden", lastName: "Torres", major: "Accounting", housing: "Sigma House", hometown: "Fort Worth, TX", photo: "" },
-  { id: 13, firstName: "Parker", lastName: "Griffin", major: "Political Science", housing: "Founders Hall", hometown: "Shreveport, LA", photo: "" },
-  { id: 14, firstName: "Quinn", lastName: "Patterson", major: "Electrical Engineering", housing: "The Lodge", hometown: "Lubbock, TX", photo: "" },
-  { id: 15, firstName: "Sawyer", lastName: "Simmons", major: "Communications", housing: "The Annex", hometown: "Baton Rouge, LA", photo: "" },
-  { id: 16, firstName: "Cameron", lastName: "Fisher", major: "Biology", housing: "Sigma House", hometown: "Oklahoma City, OK", photo: "" },
-  { id: 17, firstName: "Bailey", lastName: "Hamilton", major: "Business Administration", housing: "Founders Hall", hometown: "Memphis, TN", photo: "" },
-  { id: 18, firstName: "Elliot", lastName: "Wells", major: "Mechanical Engineering", housing: "The Lodge", hometown: "Amarillo, TX", photo: "" },
-  { id: 19, firstName: "Finley", lastName: "Kennedy", major: "Psychology", housing: "The Annex", hometown: "Jackson, MS", photo: "" },
-  { id: 20, firstName: "Harper", lastName: "Douglas", major: "Finance", housing: "Sigma House", hometown: "Waco, TX", photo: "" },
-  { id: 21, firstName: "Marley", lastName: "Rivera", major: "Chemistry", housing: "Founders Hall", hometown: "Corpus Christi, TX", photo: "" },
-  { id: 22, firstName: "Sage", lastName: "Cooper", major: "Civil Engineering", housing: "The Lodge", hometown: "Tyler, TX", photo: "" },
-  { id: 23, firstName: "Remy", lastName: "Morgan", major: "Marketing", housing: "The Annex", hometown: "Shawnee, OK", photo: "" },
-  { id: 24, firstName: "Blair", lastName: "Sullivan", major: "Kinesiology", housing: "Sigma House", hometown: "Abilene, TX", photo: "" },
+  { id: 1, firstName: "Sanders", lastName: "Wiggins", major: "Business", housing: "Callaway House", hometown: "Texarkana, Texas", photo: "assets/photos/sanders-wiggins.jpg" },
+  { id: 2, firstName: "Maddox", lastName: "Montgomery", major: "Business", housing: "Villas on Rio", hometown: "Austin, Texas", photo: "assets/photos/maddox-montgomery.jpg" },
+  { id: 3, firstName: "Henry", lastName: "Lanier", major: "Business", housing: "Villas on Rio", hometown: "Houston, Texas", photo: "assets/photos/henry-lanier.jpg" },
+  { id: 4, firstName: "Kyle", lastName: "Kreuz", major: "Neuroscience", housing: "Callaway House", hometown: "Austin, Texas", photo: "assets/photos/kyle-kreuz.jpg" },
+  { id: 5, firstName: "Crawford", lastName: "Heininger", major: "Environmental Science", housing: "The Castilian", hometown: "Austin, Texas", photo: "assets/photos/crawford-heininger.jpg" },
+  { id: 6, firstName: "Taylor", lastName: "Mackey", major: "Mechanical Engineering", housing: "Moontower", hometown: "Dallas, Texas", photo: "assets/photos/taylor-mackey.jpg" },
+  { id: 7, firstName: "Simon", lastName: "Pate", major: "Economics (BS)", housing: "The Callaway House", hometown: "Fort Worth, Texas", photo: "assets/photos/simon-pate.jpg" },
+  { id: 8, firstName: "Bobby", lastName: "Frazer", major: "Journalism", housing: "Castillian", hometown: "Austin, Texas", photo: "assets/photos/bobby-frazer.jpg" },
+  { id: 9, firstName: "William", lastName: "Marrs", major: "Biology", housing: "Duren", hometown: "Houston, Texas", photo: "assets/photos/william-marrs.jpg" },
+  { id: 10, firstName: "Caleb", lastName: "Karr", major: "Computer Science", housing: "Jester East", hometown: "Austin, Texas", photo: "assets/photos/caleb-karr.jpg" },
+  { id: 11, firstName: "Joshua", lastName: "Karr", major: "Computer Science", housing: "Jester East", hometown: "Austin, Texas", photo: "assets/photos/joshua-karr.jpg" },
+  { id: 12, firstName: "Stephen", lastName: "Pipkin", major: "Business", housing: "Jester West", hometown: "Houston, Texas", photo: "assets/photos/stephen-pipkin.jpg" },
+  { id: 13, firstName: "Mark", lastName: "Meloy", major: "Petroleum Engineer", housing: "Callaway House", hometown: "Houston, Texas", photo: "assets/photos/mark-meloy.jpg" },
+  { id: 14, firstName: "Jackson", lastName: "Winton", major: "Business", housing: "Moore-Hill", hometown: "Dallas, TX", photo: "assets/photos/jackson-winton.jpg" },
+  { id: 15, firstName: "Harrison", lastName: "Hayes", major: "Communications", housing: "Callaway House", hometown: "Fort Worth", photo: "assets/photos/harrison-hayes.jpg" },
+  { id: 16, firstName: "Rodrigo", lastName: "Arista", major: "Advertising", housing: "Waterloo", hometown: "Mexico City", photo: "assets/photos/rodrigo-arista.jpg" },
+  { id: 17, firstName: "Ty", lastName: "Bergeson", major: "Business", housing: "Castilian", hometown: "Georgetown (Austin)", photo: "assets/photos/ty-bergeson.jpg" },
+  { id: 18, firstName: "Matthew", lastName: "Holloway", major: "Business", housing: "Callaway", hometown: "Dallas", photo: "assets/photos/matthew-holloway.jpg" },
+  { id: 19, firstName: "Lawson", lastName: "Young", major: "Public Affairs", housing: "Callaway House", hometown: "Tuscaloosa, Alabama", photo: "assets/photos/lawson-young.jpg" },
+  { id: 20, firstName: "Dylan", lastName: "Jones", major: "Kinesiology", housing: "Jester East", hometown: "Fort Worth, TX", photo: "assets/photos/dylan-jones.jpg" },
+  { id: 21, firstName: "Landon", lastName: "Meyer", major: "Petroleum Engineering", housing: "Duren", hometown: "Austin,Texas", photo: "assets/photos/landon-meyer.jpg" },
+  { id: 22, firstName: "Richard", lastName: "Geng", major: "Petroleum Engineering", housing: "Union on 24th", hometown: "Austin, TX", photo: "assets/photos/richard-geng.jpg" },
+  { id: 23, firstName: "Jacob", lastName: "Gunn", major: "Public Affairs", housing: "San Jac", hometown: "Houston Texas", photo: "assets/photos/jacob-gunn.jpg" },
+  { id: 24, firstName: "Ben", lastName: "Harp", major: "CAP Program", housing: "Villas on Rio", hometown: "Houston, Texas", photo: "assets/photos/ben-harp.jpg" },
+  { id: 25, firstName: "Levi", lastName: "Smith", major: "Art", housing: "Moore hill", hometown: "San Antonio, TX", photo: "assets/photos/levi-smith.jpg" },
+  { id: 26, firstName: "Ben", lastName: "Soto", major: "Business", housing: "San Jacinto Hall", hometown: "Houston, TX", photo: "assets/photos/ben-soto.jpg" },
+  { id: 27, firstName: "Finn", lastName: "Dooley", major: "Business", housing: "Castilian", hometown: "Dallas", photo: "assets/photos/finn-dooley.jpg" },
+  { id: 28, firstName: "Rhett", lastName: "Brindley", major: "Business", housing: "Villas on Rio", hometown: "Houston, Texas", photo: "assets/photos/rhett-brindley.jpg" },
+  { id: 29, firstName: "Stuart", lastName: "Haney", major: "Business", housing: "Living at home", hometown: "Buda, Tx", photo: "assets/photos/stuart-haney.jpg" },
+  { id: 30, firstName: "Ryder", lastName: "Toothman", major: "Biology", housing: "San Jacinto", hometown: "Dallas", photo: "assets/photos/ryder-toothman.jpg" },
+  { id: 31, firstName: "Alex", lastName: "Parsons", major: "Radio-Film-TV", housing: "Castilian", hometown: "Fort Worth", photo: "assets/photos/alex-parsons.jpg" },
+  { id: 32, firstName: "Jake", lastName: "Williams", major: "Business", housing: "Villas on Rio", hometown: "Houston", photo: "assets/photos/jake-williams.jpg" },
+  { id: 33, firstName: "Griffin", lastName: "Donnelly", major: "Business", housing: "Callaway", hometown: "Austin", photo: "assets/photos/griffin-donnelly.jpg" },
+  { id: 34, firstName: "Luke", lastName: "Srubar", major: "Chemical Engineering", housing: "Montgomery House", hometown: "Houston", photo: "assets/photos/luke-srubar.jpg" },
+  { id: 35, firstName: "Vail", lastName: "Kleinpeter", major: "Advertising", housing: "Blanton", hometown: "Boerne", photo: "assets/photos/vail-kleinpeter.jpg" },
+  { id: 36, firstName: "Whitefield", lastName: "Powell", major: "Classics", housing: "Union on 24th", hometown: "Austin", photo: "assets/photos/whitefield-powell.jpg" },
+  { id: 37, firstName: "Felipe", lastName: "Hernandez", major: "Economics", housing: "Skyloft", hometown: "Houston, TX", photo: "assets/photos/felipe-hernandez.jpg" },
+  { id: 38, firstName: "Thorsten", lastName: "Pfeiffer", major: "Advertising", housing: "Waterloo", hometown: "Princeton, NJ", photo: "assets/photos/thorsten-pfeiffer.jpg" },
+  { id: 39, firstName: "Ephrem", lastName: "Ryan", major: "Communications", housing: "Callaway", hometown: "Austin, Tx", photo: "assets/photos/ephrem-ryan.jpg" },
+  { id: 40, firstName: "Mitchell", lastName: "Lunsford", major: "Civics", housing: "San Jacinto", hometown: "Dallas TX", photo: "assets/photos/mitchell-lunsford.jpg" },
+  { id: 41, firstName: "Luke", lastName: "Brindley", major: "Business", housing: "Villas on Rio", hometown: "Houston, TX", photo: "assets/photos/luke-brindley.jpg" },
+  { id: 42, firstName: "Lincoln", lastName: "Leeser", major: "Civics", housing: "Castilian", hometown: "Houston TX", photo: "assets/photos/lincoln-leeser.jpg" },
+  { id: 43, firstName: "Caden", lastName: "Hutchison", major: "Business", housing: "Duren", hometown: "San Antonio, TX", photo: "assets/photos/caden-hutchison.jpg" },
+  { id: 44, firstName: "Reid", lastName: "Leipsner", major: "Human Dimensions of Organizations", housing: "Callaway", hometown: "Austin, TX", photo: "assets/photos/reid-leipsner.jpg" },
+  { id: 45, firstName: "Jackson", lastName: "Lueders", major: "Business", housing: "Callaway", hometown: "Austin TX", photo: "assets/photos/jackson-lueders.jpg" },
+  { id: 46, firstName: "Slaton", lastName: "Boothe", major: "Civics", housing: "Callaway", hometown: "Austin TX", photo: "assets/photos/slaton-boothe.jpg" },
+  { id: 47, firstName: "Preston", lastName: "Burks", major: "Health and society", housing: "The rise", hometown: "Dallas", photo: "assets/photos/preston-burks.jpg" },
+  { id: 48, firstName: "Ray", lastName: "Ugalde", major: "Geography", housing: "Block 25th E", hometown: "Houston, Tx", photo: "assets/photos/ray-ugalde.jpg" },
+  { id: 49, firstName: "George", lastName: "Eastland", major: "Civil Engineering", housing: "Brackenridge hall", hometown: "Kerrville, TX", photo: "assets/photos/george-eastland.jpg" },
+  { id: 50, firstName: "Nathan", lastName: "Griffin", major: "Psychology", housing: "Moorehill hall", hometown: "Houston tx", photo: "assets/photos/nathan-griffin.jpg" },
+  { id: 51, firstName: "Micah", lastName: "Hinson", major: "Petroleum Engineering", housing: "Brackenridge Hall", hometown: "Dallas, Texas", photo: "assets/photos/micah-hinson.jpg" },
+  { id: 52, firstName: "Colby", lastName: "Wilks", major: "Mechanical Engineer", housing: "San Jacinto", hometown: "Dallas, Texas", photo: "assets/photos/colby-wilks.jpg" },
+  { id: 53, firstName: "Harrison", lastName: "Penn", major: "Business", housing: "Villas on Rio", hometown: "Jacksonville, Tx", photo: "assets/photos/harrison-penn.jpg" },
+  { id: 54, firstName: "Carter", lastName: "Shelton", major: "Biology", housing: "Montgomery House", hometown: "Houston, Tx", photo: "assets/photos/carter-shelton.jpg" },
+  { id: 55, firstName: "Cade", lastName: "Reeves", major: "Civil Engineering", housing: "Jester", hometown: "Austin, TX", photo: "assets/photos/cade-reeves.jpg" },
+  { id: 56, firstName: "Crockett", lastName: "Berry", major: "Education", housing: "Villas on Rio", hometown: "Houston", photo: "assets/photos/crockett-berry.jpg" },
+  { id: 57, firstName: "Canyon", lastName: "Shaw", major: "Sport Management", housing: "Callaway House", hometown: "Austin", photo: "assets/photos/canyon-shaw.jpg" },
+  { id: 58, firstName: "Jackson", lastName: "Adams", major: "Business", housing: "Callaway", hometown: "Texarkana", photo: "assets/photos/jackson-adams.jpg" },
+  { id: 59, firstName: "Dru", lastName: "Allen", major: "Business", housing: "MoonTower", hometown: "Dallas Texas", photo: "assets/photos/dru-allen.jpg" },
+  { id: 60, firstName: "Isaac", lastName: "Franco", major: "Business", housing: "Home", hometown: "Buda TX", photo: "assets/photos/isaac-franco.jpg" },
+  { id: 61, firstName: "Cade", lastName: "Tingle", major: "International Relations", housing: "Torre", hometown: "Austin, Tx", photo: "assets/photos/cade-tingle.jpg" },
+  { id: 62, firstName: "Joseph", lastName: "Uribe", major: "Government", housing: "Jester East", hometown: "Rio Grande Valley (RGV)", photo: "assets/photos/joseph-uribe.jpg" },
+  { id: 63, firstName: "Logan", lastName: "Lewis", major: "Human Dimensions of Organizations", housing: "Blanton", hometown: "San Antonio", photo: "assets/photos/logan-lewis.jpg" },
+  { id: 64, firstName: "Cesar", lastName: "Garcia", major: "Biology", housing: "Villas on 26th", hometown: "San Antonio", photo: "assets/photos/cesar-garcia.jpg" },
+  { id: 65, firstName: "Maxwell", lastName: "McKee", major: "Business", housing: "Villas on Rio", hometown: "Houston", photo: "assets/photos/maxwell-mckee.jpg" },
+  { id: 66, firstName: "Bear", lastName: "Griesemer", major: "Civic Honors", housing: "Callaway", hometown: "Waco, TX", photo: "assets/photos/bear-griesemer.jpg" },
+  { id: 67, firstName: "Kash", lastName: "Roberts", major: "CLD", housing: "Skyloft", hometown: "Dallas", photo: "assets/photos/kash-roberts.jpg" },
+  { id: 68, firstName: "Daly", lastName: "Ryder", major: "Electrical Engineering", housing: "The Standard", hometown: "Dallas", photo: "assets/photos/daly-ryder.jpg" },
+  { id: 69, firstName: "Amey", lastName: "Jha", major: "Communication and leadership", housing: "The Standard", hometown: "Scarsdale, New York", photo: "assets/photos/amey-jha.jpg" },
+  { id: 70, firstName: "Walker", lastName: "Hanks", major: "Business Major", housing: "Callaway House", hometown: "Houston, Texas", photo: "assets/photos/walker-hanks.jpg" },
+  { id: 71, firstName: "Tito", lastName: "Siewczynski", major: "Economics (BA)", housing: "The Quarters", hometown: "Dallas, TX", photo: "assets/photos/tito-siewczynski.jpg" },
+  { id: 72, firstName: "Seth", lastName: "Priebe", major: "Economics", housing: "Castilian", hometown: "Austin, TX", photo: "assets/photos/seth-priebe.jpg" },
 ];
