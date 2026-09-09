@@ -1,9 +1,13 @@
 /**
  * App shell: wires up the mode tabs and initializes each mode module
  * once, on first visit, to keep things fast and simple.
+ *
+ * Called by js/auth.js once the password gate is passed and every
+ * script has loaded — not on DOMContentLoaded, since that has
+ * already fired by the time this file is dynamically loaded.
  */
 
-document.addEventListener("DOMContentLoaded", () => {
+function initApp() {
   document.getElementById("roster-count").textContent = PEOPLE.length;
 
   const tabs = document.querySelectorAll(".mode-tab");
@@ -36,4 +40,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const saved = localStorage.getItem("byx-mode");
   activate(saved && modules[saved] ? saved : "gallery");
-});
+}
