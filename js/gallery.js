@@ -1,9 +1,9 @@
 /**
- * Gallery mode: a grid of plain text cards (name, major, housing,
- * hometown — no photo). Click a card to expand it in place and reveal
- * the details below the name. Any number of cards can be expanded at
- * once ("all next to each other"). Column count is user-adjustable
- * (1-4) and remembered.
+ * Gallery mode: a grid of photo cards (photo, then name, then
+ * major/housing/hometown). Click a card to expand it in place and
+ * reveal the details below the name. Any number of cards can be
+ * expanded at once ("all next to each other"). Column count is
+ * user-adjustable (1-4) and remembered.
  */
 
 const Gallery = (() => {
@@ -64,15 +64,22 @@ const Gallery = (() => {
     card.type = "button";
     card.setAttribute("aria-expanded", "false");
 
+    const photo = Utils.el("div", "gallery-card-photo");
+    photo.appendChild(Utils.buildFace(person, { size: "fill" }));
+    card.appendChild(photo);
+
+    const body = Utils.el("div", "gallery-card-body");
+    card.appendChild(body);
+
     const label = Utils.el("div", "gallery-card-label", Utils.fullName(person));
-    card.appendChild(label);
+    body.appendChild(label);
 
     const details = Utils.el("div", "gallery-card-details");
     details.hidden = true;
     details.appendChild(detailRow("Major", person.major));
     details.appendChild(detailRow("Housing", person.housing));
     details.appendChild(detailRow("Hometown", person.hometown));
-    card.appendChild(details);
+    body.appendChild(details);
 
     card.addEventListener("click", () => {
       const expanded = card.classList.toggle("expanded");

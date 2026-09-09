@@ -58,10 +58,9 @@ const Flashcards = (() => {
     cardEl.classList.toggle("flipped", flipped);
 
     if (!flipped) {
+      // Front is the photo only — no name — so this can actually be
+      // used to test yourself before flipping to check the answer.
       faceSlot.appendChild(Utils.buildFace(person, { size: "fill" }));
-      const caption = Utils.el("div", "flashcard-face-caption");
-      caption.appendChild(Utils.el("p", "flashcard-name", Utils.fullName(person)));
-      faceSlot.appendChild(caption);
       faceSlot.hidden = false;
       detailsSlot.hidden = true;
     } else {

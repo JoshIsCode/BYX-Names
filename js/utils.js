@@ -24,6 +24,9 @@ const Utils = (() => {
       img.src = person.photo;
       img.alt = "";
       img.loading = "lazy";
+      // Bias the crop toward the detected face instead of a plain
+      // center-crop, so cover-cropped photos don't cut off faces.
+      img.style.objectPosition = person.facePos || "50% 38%";
       img.onerror = () => {
         img.remove();
         wrap.appendChild(initialsSpan(person));

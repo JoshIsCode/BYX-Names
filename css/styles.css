@@ -1,4 +1,5 @@
 :root {
+  color-scheme: light dark;
   --bg: #f4f4f3;
   --surface: #ffffff;
   --border: #e2e1de;
@@ -183,21 +184,26 @@ main {
 .gallery-card {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  gap: 8px;
-  aspect-ratio: 4 / 3;
-  padding: 16px;
+  padding: 0;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface);
   box-shadow: var(--shadow);
+  overflow: hidden;
   cursor: pointer;
   text-align: left;
 }
-.gallery-card.expanded {
-  aspect-ratio: auto;
-  justify-content: flex-start;
-  border-color: var(--text);
+.gallery-card.expanded { border-color: var(--text); }
+.gallery-card-photo {
+  aspect-ratio: 4 / 3;
+  flex-shrink: 0;
+}
+.gallery-card-photo .face-fill { width: 100%; height: 100%; }
+.gallery-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
 }
 .gallery-card-label {
   font-size: 1.1rem;
@@ -260,15 +266,6 @@ main {
   position: absolute;
   inset: 0;
 }
-.flashcard-face-caption {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 18px 16px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
-}
-.flashcard-face-caption .flashcard-name { color: #fff; }
 .flashcard-details {
   display: flex;
   flex-direction: column;
