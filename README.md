@@ -4,8 +4,9 @@ A simple, mobile-friendly web app for learning everyone's name, major,
 housing, and hometown. No build step, no dependencies — just open
 `index.html` (or serve the folder) in a browser.
 
-🌐 **Live site:** https://joshiscode.github.io/BYX-Names/ (deployed
-automatically from this branch via GitHub Pages — see below).
+This repo contains real names and photos, so it's kept **private** and
+is **not** deployed anywhere public (no GitHub Pages) — see
+[Running locally](#running-locally) below.
 
 ## Modes
 
@@ -49,9 +50,9 @@ To update or correct an entry, edit its object in the `PEOPLE` array in
 }
 ```
 
-> **Note:** this repo (and the GitHub Pages site below, once enabled)
-> contains real names and photos of pledge class members. Keep the
-> repository private, or check with the group, before making it public.
+> **Note:** this repo contains real names and photos of pledge class
+> members. Keep the repository private, and check with the group
+> before ever making it public or deploying it anywhere.
 
 ## Running locally
 
@@ -63,18 +64,3 @@ python3 -m http.server 8000
 ```
 
 Then visit `http://localhost:8000`.
-
-## Deploying to GitHub Pages
-
-A workflow (`.github/workflows/deploy-pages.yml`) is already set up to
-publish this static site to GitHub Pages automatically on every push
-to `main` or `claude/name-learning-app-i6l2oe`. It needs no build
-step — it just uploads the repo as-is.
-
-One-time setup (repo owner only):
-
-1. Go to **Settings → Pages** in the GitHub repo.
-2. Under **Build and deployment → Source**, choose **GitHub Actions**.
-
-After that, every push triggers a deploy and the site is available at
-`https://joshiscode.github.io/BYX-Names/`.
