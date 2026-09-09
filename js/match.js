@@ -46,7 +46,7 @@ const Match = (() => {
       const card = Utils.el("button", "match-tile match-face-tile");
       card.type = "button";
       card.dataset.id = person.id;
-      card.appendChild(Utils.buildFace(person, { size: "md" }));
+      card.appendChild(Utils.buildFace(person, { size: "fill" }));
       card.addEventListener("click", () => selectFace(card, person));
       facesCol.appendChild(card);
     }

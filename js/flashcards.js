@@ -58,8 +58,10 @@ const Flashcards = (() => {
     cardEl.classList.toggle("flipped", flipped);
 
     if (!flipped) {
-      faceSlot.appendChild(Utils.buildFace(person, { size: "xl" }));
-      faceSlot.appendChild(Utils.el("div", "flashcard-name", Utils.fullName(person)));
+      faceSlot.appendChild(Utils.buildFace(person, { size: "fill" }));
+      const caption = Utils.el("div", "flashcard-face-caption");
+      caption.appendChild(Utils.el("p", "flashcard-name", Utils.fullName(person)));
+      faceSlot.appendChild(caption);
       faceSlot.hidden = false;
       detailsSlot.hidden = true;
     } else {
