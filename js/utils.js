@@ -26,7 +26,18 @@ const Utils = (() => {
       img.loading = "lazy";
       // Bias the crop toward the detected face instead of a plain
       // center-crop, so cover-cropped photos don't cut off faces.
-      img.style.objectPosition = person.facePos || "50% 38%";
+      const facePos = person.facePos || "50% 38%";
+      img.style.objectPosition = facePos;
+      // object-position only repositions the existing cover-crop — it
+      // never zooms. Most source photos are full-body or waist-up, so
+      // without an actual zoom the head stays small. `transform: scale()`
+      // anchored at the same point (via transform-origin) zooms in on
+      // the head on top of that crop.
+      const zoom = person.faceZoom || 1;
+      if (zoom > 1) {
+        img.style.transformOrigin = facePos;
+        img.style.transform = `scale(${zoom})`;
+      }
       img.onerror = () => {
         img.remove();
         wrap.appendChild(initialsSpan(person));
