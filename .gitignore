@@ -1,0 +1,5 @@
+# Editor/IDE config — personal, not meant to be shared
+.idea/
+.vscode/
+*.swp
+.DS_Store

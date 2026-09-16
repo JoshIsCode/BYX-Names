@@ -258,7 +258,19 @@ main {
   justify-content: center;
   flex-shrink: 0;
 }
-.face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* The photo itself: an enlarge-then-shift pair of plain block boxes
+   (see js/utils.js) instead of an <img> + transform: scale(), which
+   avoids a transform/nested-overflow rendering bug entirely. */
+.face-photo-outer { width: 100%; height: 100%; overflow: hidden; position: relative; }
+.face-photo-inner {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
 .face.face-fallback {
   background: var(--text-muted);
   color: var(--surface);
@@ -269,7 +281,8 @@ main {
 .face-lg { width: 84px; height: 84px; font-size: 1.5rem; }
 .face-xl { width: 170px; height: 170px; font-size: 2.6rem; }
 /* Fills its parent completely — used wherever the photo should be the
-   whole card (flashcards, match tiles) instead of a small inset image. */
+   whole card (gallery, flashcards, match tiles) instead of a small
+   inset image. */
 .face-fill { width: 100%; height: 100%; font-size: 3.2rem; border-radius: 0; }
 
 /* ---------------- Flashcards mode ---------------- */
@@ -287,9 +300,13 @@ main {
   padding: 0;
   cursor: pointer;
 }
+/* Not position:absolute — only one of these is ever visible at a time
+   (the other has the hidden attribute), so plain block sizing is
+   enough, and an absolutely-positioned ancestor deep in this chain
+   turned out to silently break the face photo's zoom (see js/utils.js). */
 .flashcard-face, .flashcard-details {
-  position: absolute;
-  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .flashcard-details {
   display: flex;

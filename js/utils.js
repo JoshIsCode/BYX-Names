@@ -14,36 +14,66 @@ const Utils = (() => {
   /**
    * Builds a face element for a person: a real photo if `photo` is set
    * and loads successfully, otherwise a plain initials avatar.
+   *
+   * The photo is rendered as a background-image (cover-fit + zoom) on
+   * a plain sized div, rather than an <img> with object-fit + a CSS
+   * transform: scale() for the zoom. That combination — a scaled
+   * transform inside two nested overflow:hidden ancestors, which is
+   * exactly the gallery/flashcard/match-tile structure — silently
+   * fails to visually crop/zoom in at least some browser engines
+   * (computed styles all check out correct; nothing paints as
+   * expected).
+   *
+   * The zoom itself (enlarging + shifting the background layer) is
+   * sized in real measured pixels, not CSS percentages: percentages
+   * chained through this component's several nested 100%-of-parent
+   * layers also failed to visually apply in testing (again with
+   * fully correct computed styles) even with no transform involved
+   * at all. Pixels measured post-layout sidestep that too.
    */
   function buildFace(person, { size = "md" } = {}) {
     const wrap = document.createElement("div");
     wrap.className = `face face-${size}`;
 
     if (person.photo) {
-      const img = document.createElement("img");
-      img.src = person.photo;
-      img.alt = "";
-      img.loading = "lazy";
-      // Bias the crop toward the detected face instead of a plain
-      // center-crop, so cover-cropped photos don't cut off faces.
       const facePos = person.facePos || "50% 38%";
-      img.style.objectPosition = facePos;
-      // object-position only repositions the existing cover-crop — it
-      // never zooms. Most source photos are full-body or waist-up, so
-      // without an actual zoom the head stays small. `transform: scale()`
-      // anchored at the same point (via transform-origin) zooms in on
-      // the head on top of that crop.
       const zoom = person.faceZoom || 1;
+      const [fx, fy] = facePos.split(" ").map((v) => parseFloat(v) / 100);
+
+      const outer = document.createElement("div");
+      outer.className = "face-photo-outer";
+
+      const inner = document.createElement("div");
+      inner.className = "face-photo-inner";
+      inner.style.backgroundImage = `url("${person.photo}")`;
+      inner.style.backgroundPosition = facePos;
+      outer.appendChild(inner);
+      wrap.appendChild(outer);
+
       if (zoom > 1) {
-        img.style.transformOrigin = facePos;
-        img.style.transform = `scale(${zoom})`;
+        // Needs a real layout box, so this only works once the caller
+        // has attached `wrap` to the document — true by the next frame
+        // in every mode here (each appends synchronously right after
+        // calling this).
+        requestAnimationFrame(() => {
+          const rect = outer.getBoundingClientRect();
+          if (rect.width === 0 || rect.height === 0) return;
+          inner.style.width = `${rect.width * zoom}px`;
+          inner.style.height = `${rect.height * zoom}px`;
+          inner.style.left = `${fx * rect.width * (1 - zoom)}px`;
+          inner.style.top = `${fy * rect.height * (1 - zoom)}px`;
+        });
       }
-      img.onerror = () => {
-        img.remove();
+
+      // background-image has no onerror, so probe the same URL with a
+      // throwaway Image() to detect a missing/broken photo.
+      const probe = new Image();
+      probe.onerror = () => {
+        outer.remove();
         wrap.appendChild(initialsSpan(person));
         wrap.classList.add("face-fallback");
       };
-      wrap.appendChild(img);
+      probe.src = person.photo;
     } else {
       wrap.appendChild(initialsSpan(person));
       wrap.classList.add("face-fallback");
