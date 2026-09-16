@@ -30,8 +30,10 @@ const UNLOCK_KEY = "byx-unlocked";
 const APP_SCRIPTS = [
   "js/data.js",
   "js/utils.js",
+  "js/scope.js",
   "js/gallery.js",
   "js/flashcards.js",
+  "js/learn.js",
   "js/quiz.js",
   "js/match.js",
   "js/list.js",

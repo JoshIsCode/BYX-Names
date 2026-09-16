@@ -10,6 +10,15 @@ below) — but the underlying repo, and anything in it, is only as
 private as GitHub lets it be. Don't treat the password as real
 security.
 
+## Studying a subset
+
+The **Studying:** dropdown at the top applies to every mode at once —
+"Everyone" or "Sanders → Whitefield (36) — test range" (ids 1–36 in
+`js/data.js`). It's remembered per-browser. To add another named range
+later (e.g. once a new test range is announced), add an entry to
+`RANGES` in `js/scope.js` and a matching `<option>` in `index.html`'s
+`#scope-select`.
+
 ## Modes
 
 - **Gallery** — a grid of photo cards (photo, name, major, housing,
@@ -20,6 +29,11 @@ security.
 - **Flashcards** — one person at a time, photo only on the front so
   you can test yourself. Tap the card to flip and reveal the name and
   details. Step through with Previous/Next or shuffle the deck.
+- **Learn** — Quizlet-style, in small batches: see a photo, try to
+  recall who it is, reveal to check, then say "Still learning" or "Got
+  it" yourself. Missed cards come back around later in the same set;
+  once you've gotten everyone right, move to the next set. Ends with a
+  summary of anyone who took more than one try.
 - **Test** — quiz mode. Shows a face and asks for first name, last
   name, major, housing, and hometown (multiple choice), then moves to
   the next person. Choose a short round or the whole roster, and get a

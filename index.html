@@ -26,9 +26,18 @@
   <p class="app-subtitle"><span id="roster-count">0</span> people — learn names, majors, housing &amp; hometowns</p>
 </header>
 
+<div class="scope-bar">
+  <label for="scope-select">Studying:</label>
+  <select id="scope-select">
+    <option value="all">Everyone (72)</option>
+    <option value="test36">Sanders → Whitefield (36) — test range</option>
+  </select>
+</div>
+
 <nav class="mode-tabs" aria-label="Learning mode">
   <button class="mode-tab" data-mode="gallery" type="button">Gallery</button>
   <button class="mode-tab" data-mode="flashcards" type="button">Flashcards</button>
+  <button class="mode-tab" data-mode="learn" type="button">Learn</button>
   <button class="mode-tab" data-mode="quiz" type="button">Test</button>
   <button class="mode-tab" data-mode="match" type="button">Match</button>
   <button class="mode-tab" data-mode="list" type="button">List</button>
@@ -63,6 +72,55 @@
       <button id="flashcard-shuffle" class="btn" type="button">Shuffle</button>
       <button id="flashcard-next" class="btn" type="button">Next</button>
     </div>
+  </section>
+
+  <!-- ================= LEARN MODE (Quizlet-style, small sets) ================= -->
+  <section id="mode-learn" class="mode-panel" hidden>
+
+    <div id="learn-setup" class="quiz-setup">
+      <h2>Learn in small sets</h2>
+      <p class="hint">
+        See a photo, try to recall who it is, then reveal to check.
+        Cards you miss come back around until you've got them —
+        then it's on to the next set.
+      </p>
+      <fieldset class="quiz-size-choice">
+        <legend>Set size</legend>
+        <label><input type="radio" name="learn-size" value="5" checked /> 5</label>
+        <label><input type="radio" name="learn-size" value="8" /> 8</label>
+        <label><input type="radio" name="learn-size" value="12" /> 12</label>
+      </fieldset>
+      <button id="learn-start" class="btn btn-primary" type="button">Start Learning</button>
+    </div>
+
+    <div id="learn-play" class="quiz-play" hidden>
+      <div class="quiz-progress-track"><div id="learn-progress-bar" class="quiz-progress-bar"></div></div>
+      <p id="learn-progress-label" class="hint"></p>
+
+      <div id="learn-face" class="quiz-face"></div>
+      <div id="learn-details" class="learn-details" hidden></div>
+
+      <button id="learn-reveal" class="btn btn-primary learn-reveal-btn" type="button">Show Answer</button>
+      <div id="learn-grade" class="learn-grade" hidden>
+        <button id="learn-again" class="btn" type="button">Still learning</button>
+        <button id="learn-know" class="btn btn-success" type="button">Got it</button>
+      </div>
+    </div>
+
+    <div id="learn-round-done" class="quiz-summary" hidden>
+      <h2 id="learn-round-heading">Set complete!</h2>
+      <p id="learn-round-sub" class="hint"></p>
+      <button id="learn-next-round" class="btn btn-primary" type="button">Next Set</button>
+    </div>
+
+    <div id="learn-summary" class="quiz-summary" hidden>
+      <h2>All done!</h2>
+      <p id="learn-summary-sub" class="hint"></p>
+      <div id="learn-extra-practice" class="quiz-missed-list"></div>
+      <button id="learn-restart" class="btn btn-primary" type="button">Start Over</button>
+    </div>
+
+    <button id="learn-abandon" class="btn quiz-abandon" type="button" title="Back to setup">Back to setup</button>
   </section>
 
   <!-- ================= TEST / QUIZ MODE ================= -->

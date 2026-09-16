@@ -39,7 +39,7 @@ const Gallery = (() => {
   function render() {
     grid.innerHTML = "";
     const q = search.value.trim().toLowerCase();
-    const people = PEOPLE.filter((p) => {
+    const people = Scope.getPeople().filter((p) => {
       if (!q) return true;
       return (
         Utils.fullName(p).toLowerCase().includes(q) ||

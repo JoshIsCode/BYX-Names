@@ -40,7 +40,7 @@ const ListView = (() => {
 
   function render() {
     const q = search.value.trim().toLowerCase();
-    let people = PEOPLE.filter((p) => {
+    let people = Scope.getPeople().filter((p) => {
       if (!q) return true;
       return (
         Utils.fullName(p).toLowerCase().includes(q) ||
@@ -77,5 +77,5 @@ const ListView = (() => {
     }
   }
 
-  return { init };
+  return { init, render };
 })();

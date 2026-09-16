@@ -40,7 +40,7 @@ const Quiz = (() => {
 
   function start() {
     const sizeChoice = document.querySelector('input[name="quiz-size"]:checked').value;
-    let people = Utils.shuffle(PEOPLE);
+    let people = Utils.shuffle(Scope.getPeople());
     if (sizeChoice !== "all") {
       people = people.slice(0, Math.min(parseInt(sizeChoice, 10), people.length));
     }
@@ -79,7 +79,7 @@ const Quiz = (() => {
     document.getElementById("quiz-prompt").textContent = question.prompt(person);
 
     const correct = person[question.field];
-    const options = Utils.shuffle([correct, ...Utils.distractors(PEOPLE, question.field, correct, 3)]);
+    const options = Utils.shuffle([correct, ...Utils.distractors(Scope.getPeople(), question.field, correct, 3)]);
 
     const optionsEl = document.getElementById("quiz-options");
     optionsEl.innerHTML = "";

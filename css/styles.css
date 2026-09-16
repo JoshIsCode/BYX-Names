@@ -79,6 +79,25 @@ body {
 .app-header h1 { margin: 0; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; }
 .app-subtitle { margin: 4px 0 0; color: var(--text-muted); font-size: 0.88rem; }
 
+.scope-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px 12px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.scope-bar select {
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.85rem;
+  max-width: 100%;
+}
+
 .mode-tabs {
   position: sticky;
   top: 0;
@@ -163,6 +182,12 @@ main {
 .btn-primary {
   background: var(--ink);
   border-color: var(--ink);
+  color: var(--ink-contrast);
+  font-weight: 600;
+}
+.btn-success {
+  background: var(--success);
+  border-color: var(--success);
   color: var(--ink-contrast);
   font-weight: 600;
 }
@@ -292,6 +317,18 @@ main {
   gap: 10px;
   margin-top: 16px;
 }
+
+/* ---------------- Learn mode ---------------- */
+
+.learn-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 16px auto 4px;
+}
+.learn-reveal-btn { display: block; margin: 16px auto 0; }
+.learn-grade { display: flex; justify-content: center; gap: 10px; margin-top: 16px; }
 
 /* ---------------- Test / quiz mode ---------------- */
 

@@ -28,8 +28,17 @@ const Flashcards = (() => {
       }
     });
 
-    order = PEOPLE.map((p) => p.id);
+    order = Scope.getPeople().map((p) => p.id);
     index = 0;
+    render();
+  }
+
+  // Re-pull the deck from the current study-set scope (called when the
+  // scope changes) without re-attaching the event listeners init() set up.
+  function refresh() {
+    order = Scope.getPeople().map((p) => p.id);
+    index = 0;
+    flipped = false;
     render();
   }
 
@@ -82,5 +91,5 @@ const Flashcards = (() => {
     return line;
   }
 
-  return { init };
+  return { init, refresh };
 })();
