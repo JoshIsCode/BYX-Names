@@ -331,6 +331,7 @@ main {
 .learn-type-input.correct { border-color: var(--success); }
 .learn-type-input.incorrect { border-color: var(--danger); }
 .learn-feedback { text-align: center; margin-top: 12px; font-size: 0.9rem; color: var(--text-muted); }
+.learn-feedback.remediation { color: var(--text); font-weight: 600; }
 
 /* ---------------- Test / quiz mode ---------------- */
 
