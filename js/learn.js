@@ -158,9 +158,8 @@ const Learn = (() => {
     if (!raw) return;
     locked = true;
 
-    const normalized = raw.toLowerCase();
-    const accepted = [Utils.fullName(current), current.firstName, current.lastName].map((s) => s.toLowerCase());
-    const isCorrect = accepted.includes(normalized);
+    const normalized = raw.toLowerCase().replace(/\s+/g, " ");
+    const isCorrect = normalized === Utils.fullName(current).toLowerCase();
 
     typeInput.disabled = true;
     typeInput.classList.add(isCorrect ? "correct" : "incorrect");

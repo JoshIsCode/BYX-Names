@@ -29,9 +29,9 @@ later (e.g. once a new test range is announced), add an entry to
   details. Step through with Previous/Next or shuffle the deck.
 - **Learn** — Quizlet-style, in small batches: see a photo, then
   answer who it is — a random mix of multiple choice and typed-answer
-  questions, auto-graded (typed answers accept the full name, or just
-  first or last). Missed cards come back around later in the same
-  set; once you've gotten everyone right, move to the next set. Ends
+  questions, auto-graded (typed answers need the full first and last
+  name). Missed cards come back around later in the same set; once
+  you've gotten everyone right, move to the next set. Ends
   with a summary of anyone who took more than one try.
 - **Test** — quiz mode. Shows a face and asks for first name, last
   name, major, housing, and hometown (multiple choice), then moves to
