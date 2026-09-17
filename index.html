@@ -68,9 +68,9 @@
     <div id="learn-setup" class="quiz-setup">
       <h2>Learn in small sets</h2>
       <p class="hint">
-        See a photo, try to recall who it is, then reveal to check.
-        Cards you miss come back around until you've got them —
-        then it's on to the next set.
+        See a photo, then answer — sometimes multiple choice, sometimes
+        typing the name yourself. Cards you miss come back around until
+        you've got them — then it's on to the next set.
       </p>
       <fieldset class="quiz-size-choice">
         <legend>Set size</legend>
@@ -86,13 +86,15 @@
       <p id="learn-progress-label" class="hint"></p>
 
       <div id="learn-face" class="quiz-face"></div>
-      <div id="learn-details" class="learn-details" hidden></div>
+      <p class="quiz-prompt">Who is this?</p>
 
-      <button id="learn-reveal" class="btn btn-primary learn-reveal-btn" type="button">Show Answer</button>
-      <div id="learn-grade" class="learn-grade" hidden>
-        <button id="learn-again" class="btn" type="button">Still learning</button>
-        <button id="learn-know" class="btn btn-success" type="button">Got it</button>
-      </div>
+      <div id="learn-mc" class="quiz-options" hidden></div>
+
+      <form id="learn-type-form" class="learn-type-form" hidden>
+        <input id="learn-type-input" class="learn-type-input" type="text" placeholder="Type their first and last name…" autocomplete="off" autocapitalize="words" />
+        <button class="btn btn-primary" type="submit">Check</button>
+      </form>
+      <p id="learn-feedback" class="learn-feedback" hidden></p>
     </div>
 
     <div id="learn-round-done" class="quiz-summary" hidden>

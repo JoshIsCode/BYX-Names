@@ -27,11 +27,12 @@ later (e.g. once a new test range is announced), add an entry to
 - **Flashcards** — one person at a time, photo only on the front so
   you can test yourself. Tap the card to flip and reveal the name and
   details. Step through with Previous/Next or shuffle the deck.
-- **Learn** — Quizlet-style, in small batches: see a photo, try to
-  recall who it is, reveal to check, then say "Still learning" or "Got
-  it" yourself. Missed cards come back around later in the same set;
-  once you've gotten everyone right, move to the next set. Ends with a
-  summary of anyone who took more than one try.
+- **Learn** — Quizlet-style, in small batches: see a photo, then
+  answer who it is — a random mix of multiple choice and typed-answer
+  questions, auto-graded (typed answers accept the full name, or just
+  first or last). Missed cards come back around later in the same
+  set; once you've gotten everyone right, move to the next set. Ends
+  with a summary of anyone who took more than one try.
 - **Test** — quiz mode. Shows a face and asks for first name, last
   name, major, housing, and hometown (multiple choice), then moves to
   the next person. Choose a short round or the whole roster, and get a

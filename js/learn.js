@@ -1,18 +1,20 @@
 /**
  * Learn mode: Quizlet-style self-paced learning in small batches.
- * See a photo, try to recall who it is, reveal to check, then say
- * whether you knew it. Missed cards come back around later in the
- * same set; once every card in a set has been gotten right at least
- * once, move on to the next set.
+ * See a photo, then answer who it is — a random mix of multiple
+ * choice and typed-answer questions, auto-graded. Missed cards come
+ * back around later in the same set; once every card in a set has
+ * been answered correctly at least once, move on to the next set.
  */
 
 const Learn = (() => {
   let setupEl, playEl, roundDoneEl, summaryEl;
+  let faceHolder, mcContainer, typeForm, typeInput, feedbackEl;
   let sets = []; // array of arrays of person ids, chunked from the scoped pool
   let setIndex = 0;
   let queue = []; // ids remaining in the current set (FIFO; misses go to the back)
   let current = null;
-  let missedCounts = {}; // id -> times marked "still learning", across the whole session
+  let missedCounts = {}; // id -> times missed, across the whole session
+  let locked = false;
 
   function init() {
     setupEl = document.getElementById("learn-setup");
@@ -20,13 +22,20 @@ const Learn = (() => {
     roundDoneEl = document.getElementById("learn-round-done");
     summaryEl = document.getElementById("learn-summary");
 
+    faceHolder = document.getElementById("learn-face");
+    mcContainer = document.getElementById("learn-mc");
+    typeForm = document.getElementById("learn-type-form");
+    typeInput = document.getElementById("learn-type-input");
+    feedbackEl = document.getElementById("learn-feedback");
+
     document.getElementById("learn-start").addEventListener("click", start);
-    document.getElementById("learn-reveal").addEventListener("click", reveal);
-    document.getElementById("learn-again").addEventListener("click", () => grade(false));
-    document.getElementById("learn-know").addEventListener("click", () => grade(true));
     document.getElementById("learn-next-round").addEventListener("click", nextSet);
     document.getElementById("learn-restart").addEventListener("click", showSetup);
     document.getElementById("learn-abandon").addEventListener("click", showSetup);
+    typeForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      submitTyped();
+    });
 
     showSetup();
   }
@@ -80,15 +89,94 @@ const Learn = (() => {
     }
 
     current = PEOPLE.find((p) => p.id === queue[0]);
+    locked = false;
     updateProgress();
 
-    const faceHolder = document.getElementById("learn-face");
     faceHolder.innerHTML = "";
     faceHolder.appendChild(Utils.buildFace(current, { size: "xl" }));
 
-    document.getElementById("learn-details").hidden = true;
-    document.getElementById("learn-reveal").hidden = false;
-    document.getElementById("learn-grade").hidden = true;
+    feedbackEl.hidden = true;
+    feedbackEl.textContent = "";
+    typeInput.value = "";
+    typeInput.classList.remove("correct", "incorrect");
+    typeInput.disabled = false;
+
+    if (Math.random() < 0.5) {
+      renderMultipleChoice();
+    } else {
+      renderTyped();
+    }
+  }
+
+  function renderMultipleChoice() {
+    typeForm.hidden = true;
+    mcContainer.hidden = false;
+    mcContainer.innerHTML = "";
+
+    const correct = Utils.fullName(current);
+    const pool = Scope.getPeople().filter((p) => p.id !== current.id);
+    const distractorNames = [...new Set(Utils.shuffle(pool).map(Utils.fullName))]
+      .filter((n) => n !== correct)
+      .slice(0, 3);
+    const options = Utils.shuffle([correct, ...distractorNames]);
+
+    for (const name of options) {
+      const btn = Utils.el("button", "quiz-option", name);
+      btn.type = "button";
+      btn.addEventListener("click", () => gradeChoice(btn, name, correct));
+      mcContainer.appendChild(btn);
+    }
+  }
+
+  function renderTyped() {
+    mcContainer.hidden = true;
+    typeForm.hidden = false;
+    typeInput.focus();
+  }
+
+  function gradeChoice(btn, chosen, correct) {
+    if (locked) return;
+    locked = true;
+
+    const allButtons = mcContainer.querySelectorAll(".quiz-option");
+    allButtons.forEach((b) => (b.disabled = true));
+
+    const isCorrect = chosen === correct;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    if (!isCorrect) {
+      allButtons.forEach((b) => {
+        if (b.textContent === correct) b.classList.add("correct");
+      });
+    }
+
+    setTimeout(() => grade(isCorrect), 900);
+  }
+
+  function submitTyped() {
+    if (locked) return;
+    const raw = typeInput.value.trim();
+    if (!raw) return;
+    locked = true;
+
+    const normalized = raw.toLowerCase();
+    const accepted = [Utils.fullName(current), current.firstName, current.lastName].map((s) => s.toLowerCase());
+    const isCorrect = accepted.includes(normalized);
+
+    typeInput.disabled = true;
+    typeInput.classList.add(isCorrect ? "correct" : "incorrect");
+    feedbackEl.hidden = false;
+    feedbackEl.textContent = isCorrect ? "Correct!" : `Correct answer: ${Utils.fullName(current)}`;
+
+    setTimeout(() => grade(isCorrect), 1300);
+  }
+
+  function grade(isCorrect) {
+    queue.shift();
+    if (!isCorrect) {
+      missedCounts[current.id] = (missedCounts[current.id] || 0) + 1;
+      queue.push(current.id); // comes back around later in this same set
+    }
+    nextCard();
   }
 
   function updateProgress() {
@@ -97,28 +185,6 @@ const Learn = (() => {
     document.getElementById("learn-progress-bar").style.width = `${((setSize - remaining) / setSize) * 100}%`;
     document.getElementById("learn-progress-label").textContent =
       `Set ${setIndex + 1} of ${sets.length} — ${remaining} card${remaining === 1 ? "" : "s"} left`;
-  }
-
-  function reveal() {
-    const detailsEl = document.getElementById("learn-details");
-    detailsEl.innerHTML = "";
-    detailsEl.appendChild(Utils.el("h3", "flashcard-name", Utils.fullName(current)));
-    detailsEl.appendChild(detailLine("Major", current.major));
-    detailsEl.appendChild(detailLine("Housing", current.housing));
-    detailsEl.appendChild(detailLine("Hometown", current.hometown));
-    detailsEl.hidden = false;
-
-    document.getElementById("learn-reveal").hidden = true;
-    document.getElementById("learn-grade").hidden = false;
-  }
-
-  function grade(knewIt) {
-    queue.shift();
-    if (!knewIt) {
-      missedCounts[current.id] = (missedCounts[current.id] || 0) + 1;
-      queue.push(current.id); // comes back around later in this same set
-    }
-    nextCard();
   }
 
   function finishSet() {
@@ -159,13 +225,6 @@ const Learn = (() => {
         );
       }
     }
-  }
-
-  function detailLine(label, value) {
-    const line = Utils.el("p", "flashcard-detail-line");
-    line.appendChild(Utils.el("span", "detail-label", label));
-    line.appendChild(Utils.el("span", "detail-value", value));
-    return line;
   }
 
   return { init };
