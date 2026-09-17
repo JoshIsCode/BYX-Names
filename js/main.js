@@ -2,10 +2,6 @@
  * App shell: wires up the mode tabs, the study-set scope selector, and
  * initializes each mode module once, on first visit, to keep things
  * fast and simple.
- *
- * Called by js/auth.js once the password gate is passed and every
- * script has loaded — not on DOMContentLoaded, since that has
- * already fired by the time this file is dynamically loaded.
  */
 
 function initApp() {
@@ -64,3 +60,5 @@ function initApp() {
   const saved = localStorage.getItem("byx-mode");
   activate(saved && modules[saved] ? saved : "gallery");
 }
+
+initApp();

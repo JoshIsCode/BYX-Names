@@ -4,11 +4,9 @@ A simple, mobile-friendly web app for learning everyone's name, major,
 housing, and hometown. No build step, no dependencies — just open
 `index.html` (or serve the folder) in a browser.
 
-This repo contains real names and photos, so the deployed site sits
-behind a password gate (see [Access & hosting](#access--hosting)
-below) — but the underlying repo, and anything in it, is only as
-private as GitHub lets it be. Don't treat the password as real
-security.
+This repo contains real names and photos of pledge class members —
+there's no password or login, so anyone with the link (or repo access)
+can see it. See [Access & hosting](#access--hosting) below.
 
 ## Studying a subset
 
@@ -88,18 +86,14 @@ any static server, e.g.:
 python3 -m http.server 8000
 ```
 
-Then visit `http://localhost:8000` — you'll need the password (see
-below) since the whole app, including its data and photos, only loads
-after it's entered.
+Then visit `http://localhost:8000`.
 
 ## Access & hosting
 
-The site is gated by a password screen (`js/auth.js`) before anything
-in the roster — script, data, or photos — is even requested. This is
-a casual deterrent, not real security: it's a static site with no
-server, so anyone who opens devtools can still get at the underlying
-files. Change the shipped placeholder password before sharing the
-link — instructions are in the comment at the top of `js/auth.js`.
+There's no password or login — the app loads straight in, for anyone
+with the link. A `noindex`/`nofollow` tag keeps it out of search
+results, but that's not access control, just a courtesy against
+accidental discovery.
 
 A GitHub Actions workflow (`.github/workflows/deploy-pages.yml`)
 publishes this site to GitHub Pages automatically on every push to
@@ -109,9 +103,12 @@ publishes this site to GitHub Pages automatically on every push to
   repo + Pages needs GitHub Pro or an org on Team/Enterprise).
 - **The published site is a public URL either way** — repo privacy
   doesn't restrict who can load the deployed Pages site, only who can
-  browse the repo itself. The password gate above is what actually
-  keeps casual visitors out; a `noindex` tag keeps it out of search
-  results.
+  browse the repo itself.
+
+If you want real access control back, the previous password-gate
+implementation (a client-side SHA-256 check before the roster's
+script/data/photos ever load) is still in git history — see the
+`js/auth.js` file as it existed before this was removed.
 
 One-time setup (repo owner only), once you've decided on repo
 visibility: go to **Settings → Pages** and, under **Build and
