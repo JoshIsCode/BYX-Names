@@ -72,8 +72,12 @@
         housing, or hometown — sometimes multiple choice, sometimes
         typed. Cards you miss come back around until you've got them
         (typed answers need a correct retype to move on) — then it's
-        on to the next set.
+        on to the next set. Anything you get right on the first try is
+        remembered, so it won't come back around next time you study.
       </p>
+      <p id="learn-mastery-stat" class="hint"></p>
+      <button id="learn-resume" class="btn btn-primary" type="button" hidden>Resume where you left off</button>
+
       <fieldset class="quiz-size-choice">
         <legend>Set size</legend>
         <label><input type="radio" name="learn-size" value="5" checked /> 5</label>
@@ -81,6 +85,7 @@
         <label><input type="radio" name="learn-size" value="12" /> 12</label>
       </fieldset>
       <button id="learn-start" class="btn btn-primary" type="button">Start Learning</button>
+      <button id="learn-reset-progress" class="btn quiz-abandon" type="button" hidden>Reset progress</button>
     </div>
 
     <div id="learn-play" class="quiz-play" hidden>

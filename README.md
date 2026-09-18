@@ -35,6 +35,11 @@ later (e.g. once a new test range is announced), add an entry to
   before it will move on. Missed questions come back around later in
   the same set; once you've gotten everyone right, move to the next
   set. Ends with a summary of anyone who took more than one try.
+  Progress is remembered per-browser: anything answered right on the
+  first try is marked mastered and won't come up again in a future
+  session, and closing the tab mid-set offers a "Resume where you
+  left off" button next time. A "Reset progress" button clears it all
+  and starts fresh.
 - **Test** — quiz mode. Shows a face and asks for first name, last
   name, major, housing, and hometown (multiple choice), then moves to
   the next person. Choose a short round or the whole roster, and get a

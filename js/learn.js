@@ -7,6 +7,15 @@
  * on. Missed questions come back around later in the same set; once
  * every question in a set has been answered correctly, move on to
  * the next set.
+ *
+ * Progress persists per-browser (localStorage), like Quizlet's Learn
+ * mode:
+ *   - Mastery: a question you've answered right on the first try
+ *     (no requeue, no remediation needed) is remembered as mastered
+ *     and won't come up again in future sessions, until reset.
+ *   - Resume: the in-progress set/run is saved after every question,
+ *     so closing the tab mid-set and coming back offers to pick up
+ *     right where it left off instead of starting over.
  */
 
 const Learn = (() => {
@@ -18,8 +27,14 @@ const Learn = (() => {
   };
   const FIELD_KEYS = Object.keys(FIELDS);
 
+  const MASTERY_KEY = "byx-learn-mastery";
+  const SESSION_KEY = "byx-learn-session";
+
+  let mastery = loadJSON(MASTERY_KEY, {});
+
   let setupEl, playEl, roundDoneEl, summaryEl;
   let faceHolder, nameRevealEl, promptEl, mcContainer, typeForm, typeInput, feedbackEl;
+  let masteryStatEl, resumeBtn, resetBtn;
   let sets = []; // array of arrays of { id, field } entries, chunked from the scoped pool
   let setIndex = 0;
   let queue = []; // entries remaining in the current set (FIFO; misses go to the back)
@@ -28,6 +43,57 @@ const Learn = (() => {
   let missedCounts = {}; // id -> times missed, across the whole session
   let locked = false;
   let remediating = false; // typed question was wrong; waiting for a correct retype
+
+  function loadJSON(key, fallback) {
+    try {
+      const raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+
+  function saveJSON(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+      // localStorage unavailable (private mode, quota, etc.) — progress
+      // just won't persist across visits; the session still works.
+    }
+  }
+
+  function masteryKey(id, field) {
+    return `${id}:${field}`;
+  }
+
+  function isMastered(id, field) {
+    return !!mastery[masteryKey(id, field)];
+  }
+
+  function markMastered(id, field) {
+    mastery[masteryKey(id, field)] = true;
+    saveJSON(MASTERY_KEY, mastery);
+  }
+
+  function resetMastery() {
+    mastery = {};
+    saveJSON(MASTERY_KEY, mastery);
+    saveJSON(SESSION_KEY, null);
+  }
+
+  function saveSession() {
+    saveJSON(SESSION_KEY, { sets, setIndex, queue, missedCounts });
+  }
+
+  function loadSession() {
+    const saved = loadJSON(SESSION_KEY, null);
+    if (!saved || !Array.isArray(saved.sets) || !Array.isArray(saved.queue)) return null;
+    return saved;
+  }
+
+  function clearSession() {
+    saveJSON(SESSION_KEY, null);
+  }
 
   function init() {
     setupEl = document.getElementById("learn-setup");
@@ -42,11 +108,21 @@ const Learn = (() => {
     typeForm = document.getElementById("learn-type-form");
     typeInput = document.getElementById("learn-type-input");
     feedbackEl = document.getElementById("learn-feedback");
+    masteryStatEl = document.getElementById("learn-mastery-stat");
+    resumeBtn = document.getElementById("learn-resume");
+    resetBtn = document.getElementById("learn-reset-progress");
 
     document.getElementById("learn-start").addEventListener("click", start);
     document.getElementById("learn-next-round").addEventListener("click", nextSet);
     document.getElementById("learn-restart").addEventListener("click", showSetup);
     document.getElementById("learn-abandon").addEventListener("click", showSetup);
+    resumeBtn.addEventListener("click", resumeSession);
+    resetBtn.addEventListener("click", () => {
+      if (confirm("Reset all Learn mode progress? This can't be undone.")) {
+        resetMastery();
+        updateSetupStats();
+      }
+    });
     typeForm.addEventListener("submit", (e) => {
       e.preventDefault();
       submitTyped();
@@ -55,11 +131,48 @@ const Learn = (() => {
     showSetup();
   }
 
+  function updateSetupStats() {
+    const people = Scope.getPeople();
+    const total = people.length * FIELD_KEYS.length;
+    const masteredCount = people.reduce(
+      (sum, p) => sum + FIELD_KEYS.filter((f) => isMastered(p.id, f)).length,
+      0
+    );
+
+    masteryStatEl.textContent =
+      masteredCount === 0
+        ? ""
+        : masteredCount >= total
+          ? "Everything in this study set is already mastered! Reset progress to practice it again."
+          : `${masteredCount} of ${total} questions mastered in this study set.`;
+
+    resetBtn.hidden = masteredCount === 0;
+
+    const saved = loadSession();
+    resumeBtn.hidden = !saved || saved.queue.length === 0;
+  }
+
   function showSetup() {
     setupEl.hidden = false;
     playEl.hidden = true;
     roundDoneEl.hidden = true;
     summaryEl.hidden = true;
+    updateSetupStats();
+  }
+
+  function resumeSession() {
+    const saved = loadSession();
+    if (!saved) return;
+    sets = saved.sets;
+    setIndex = saved.setIndex;
+    queue = saved.queue;
+    missedCounts = saved.missedCounts || {};
+
+    setupEl.hidden = true;
+    summaryEl.hidden = true;
+    roundDoneEl.hidden = true;
+    playEl.hidden = false;
+    nextCard();
   }
 
   function start() {
@@ -70,8 +183,15 @@ const Learn = (() => {
     sets = [];
     for (let i = 0; i < people.length; i += size) {
       const chunk = people.slice(i, i + size);
-      const entries = chunk.flatMap((p) => FIELD_KEYS.map((field) => ({ id: p.id, field })));
-      sets.push(Utils.shuffle(entries));
+      const entries = chunk
+        .flatMap((p) => FIELD_KEYS.map((field) => ({ id: p.id, field })))
+        .filter((e) => !isMastered(e.id, e.field));
+      if (entries.length > 0) sets.push(Utils.shuffle(entries));
+    }
+
+    if (sets.length === 0) {
+      updateSetupStats();
+      return;
     }
 
     setIndex = 0;
@@ -100,6 +220,8 @@ const Learn = (() => {
   }
 
   function nextCard() {
+    saveSession();
+
     if (queue.length === 0) {
       finishSet();
       return;
@@ -196,7 +318,7 @@ const Learn = (() => {
       // Must retype the correct answer, exactly, to move on. This was
       // already counted as a miss when it first went wrong below, so
       // just move on now — no further miss, and no requeue (it would
-      // never leave the queue otherwise).
+      // never leave the queue otherwise), and no mastery credit either.
       if (normalize(raw) === normalize(correct)) {
         typeInput.disabled = true;
         typeInput.classList.remove("incorrect");
@@ -234,8 +356,8 @@ const Learn = (() => {
     }
   }
 
-  // Removes the current entry and moves on, without touching missedCounts
-  // or requeueing — used once a remediation retype succeeds.
+  // Removes the current entry and moves on, without touching missedCounts,
+  // mastery, or requeueing — used once a remediation retype succeeds.
   function advance() {
     queue.shift();
     nextCard();
@@ -243,7 +365,9 @@ const Learn = (() => {
 
   function grade(isCorrect) {
     const entry = queue.shift();
-    if (!isCorrect) {
+    if (isCorrect) {
+      markMastered(entry.id, entry.field);
+    } else {
       missedCounts[entry.id] = (missedCounts[entry.id] || 0) + 1;
       queue.push(entry); // comes back around later in this same set
     }
@@ -272,6 +396,7 @@ const Learn = (() => {
   }
 
   function finishAll() {
+    clearSession();
     roundDoneEl.hidden = true;
     summaryEl.hidden = false;
 
