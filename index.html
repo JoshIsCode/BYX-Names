@@ -126,12 +126,17 @@
 
     <div id="quiz-setup" class="quiz-setup">
       <h2>Test yourself</h2>
-      <p class="hint">For each person you'll be asked their first name, last name, major, housing, and hometown.</p>
+      <p class="hint">For each person you'll be asked their first name, last name, major, housing, and hometown — as multiple choice, or typed out yourself.</p>
       <fieldset class="quiz-size-choice">
         <legend>How many people?</legend>
         <label><input type="radio" name="quiz-size" value="5" checked /> 5</label>
         <label><input type="radio" name="quiz-size" value="10" /> 10</label>
         <label><input type="radio" name="quiz-size" value="all" /> Everyone</label>
+      </fieldset>
+      <fieldset class="quiz-size-choice">
+        <legend>How should we answer?</legend>
+        <label><input type="radio" name="quiz-answer-mode" value="mc" checked /> Multiple choice</label>
+        <label><input type="radio" name="quiz-answer-mode" value="typed" /> Typed</label>
       </fieldset>
       <button id="quiz-start" class="btn btn-primary" type="button">Start Test</button>
     </div>
@@ -144,6 +149,12 @@
       <p id="quiz-name-reveal" class="quiz-name-reveal"></p>
       <p id="quiz-prompt" class="quiz-prompt"></p>
       <div id="quiz-options" class="quiz-options"></div>
+
+      <form id="quiz-type-form" class="learn-type-form" hidden>
+        <input id="quiz-type-input" class="learn-type-input" type="text" autocomplete="off" autocapitalize="words" />
+        <button class="btn btn-primary" type="submit">Check</button>
+      </form>
+      <p id="quiz-feedback" class="learn-feedback" hidden></p>
     </div>
 
     <div id="quiz-summary" class="quiz-summary" hidden>

@@ -1,19 +1,22 @@
 /**
  * Test mode: shows a face, then quizzes first name, last name, major,
- * housing, and hometown (one at a time, multiple choice) before moving
- * to the next person. Tracks a running score and shows a summary.
+ * housing, and hometown (one at a time) before moving to the next
+ * person. Answered either as multiple choice or typed, per the
+ * setup screen's choice. Tracks a running score and shows a summary.
  */
 
 const Quiz = (() => {
   const QUESTIONS = [
-    { field: "firstName", prompt: () => "What is this person's first name?", revealName: false },
-    { field: "lastName", prompt: () => "What is this person's last name?", revealName: false },
-    { field: "major", prompt: (p) => `What is ${Utils.fullName(p)}'s major?`, revealName: true },
-    { field: "housing", prompt: (p) => `Where does ${Utils.fullName(p)} live?`, revealName: true },
-    { field: "hometown", prompt: (p) => `Where is ${Utils.fullName(p)} from?`, revealName: true },
+    { field: "firstName", prompt: () => "What is this person's first name?", revealName: false, placeholder: "Type their first name…" },
+    { field: "lastName", prompt: () => "What is this person's last name?", revealName: false, placeholder: "Type their last name…" },
+    { field: "major", prompt: (p) => `What is ${Utils.fullName(p)}'s major?`, revealName: true, placeholder: "Type their major…" },
+    { field: "housing", prompt: (p) => `Where does ${Utils.fullName(p)} live?`, revealName: true, placeholder: "Type where they live…" },
+    { field: "hometown", prompt: (p) => `Where is ${Utils.fullName(p)} from?`, revealName: true, placeholder: "Type their hometown…" },
   ];
 
   let setupEl, playEl, summaryEl;
+  let optionsEl, typeForm, typeInput, feedbackEl;
+  let answerMode = "mc";
   let queue = []; // list of { person, question }
   let qIndex = 0;
   let score = 0;
@@ -24,10 +27,18 @@ const Quiz = (() => {
     setupEl = document.getElementById("quiz-setup");
     playEl = document.getElementById("quiz-play");
     summaryEl = document.getElementById("quiz-summary");
+    optionsEl = document.getElementById("quiz-options");
+    typeForm = document.getElementById("quiz-type-form");
+    typeInput = document.getElementById("quiz-type-input");
+    feedbackEl = document.getElementById("quiz-feedback");
 
     document.getElementById("quiz-start").addEventListener("click", start);
     document.getElementById("quiz-restart").addEventListener("click", showSetup);
     document.getElementById("quiz-restart-2").addEventListener("click", showSetup);
+    typeForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      submitTyped();
+    });
 
     showSetup();
   }
@@ -40,6 +51,7 @@ const Quiz = (() => {
 
   function start() {
     const sizeChoice = document.querySelector('input[name="quiz-size"]:checked').value;
+    answerMode = document.querySelector('input[name="quiz-answer-mode"]:checked').value;
     let people = Utils.shuffle(Scope.getPeople());
     if (sizeChoice !== "all") {
       people = people.slice(0, Math.min(parseInt(sizeChoice, 10), people.length));
@@ -61,6 +73,10 @@ const Quiz = (() => {
     renderQuestion();
   }
 
+  function normalize(s) {
+    return s.trim().toLowerCase().replace(/\s+/g, " ");
+  }
+
   function renderQuestion() {
     locked = false;
     const { person, question } = queue[qIndex];
@@ -78,35 +94,74 @@ const Quiz = (() => {
 
     document.getElementById("quiz-prompt").textContent = question.prompt(person);
 
-    const correct = person[question.field];
-    const options = Utils.shuffle([correct, ...Utils.distractors(Scope.getPeople(), question.field, correct, 3)]);
+    feedbackEl.hidden = true;
+    feedbackEl.textContent = "";
 
-    const optionsEl = document.getElementById("quiz-options");
-    optionsEl.innerHTML = "";
-    for (const option of options) {
-      const btn = Utils.el("button", "quiz-option", option);
-      btn.type = "button";
-      btn.addEventListener("click", () => answer(btn, option, correct, person, question));
-      optionsEl.appendChild(btn);
+    const correct = person[question.field];
+
+    if (answerMode === "typed") {
+      optionsEl.hidden = true;
+      typeForm.hidden = false;
+      typeInput.value = "";
+      typeInput.classList.remove("correct", "incorrect");
+      typeInput.disabled = false;
+      typeInput.placeholder = question.placeholder;
+      typeInput.focus();
+    } else {
+      typeForm.hidden = true;
+      optionsEl.hidden = false;
+      optionsEl.innerHTML = "";
+      const options = Utils.shuffle([correct, ...Utils.distractors(Scope.getPeople(), question.field, correct, 3)]);
+      for (const option of options) {
+        const btn = Utils.el("button", "quiz-option", option);
+        btn.type = "button";
+        btn.addEventListener("click", () => answerMc(btn, option, correct, person, question));
+        optionsEl.appendChild(btn);
+      }
     }
   }
 
-  function answer(btn, chosen, correct, person, question) {
+  function answerMc(btn, chosen, correct, person, question) {
     if (locked) return;
     locked = true;
 
-    const allButtons = document.querySelectorAll("#quiz-options .quiz-option");
+    const allButtons = optionsEl.querySelectorAll(".quiz-option");
     allButtons.forEach((b) => (b.disabled = true));
 
-    if (chosen === correct) {
-      btn.classList.add("correct");
-      score++;
-    } else {
-      btn.classList.add("incorrect");
-      missed.push({ person, field: question.field, correct, chosen });
+    const isCorrect = chosen === correct;
+    btn.classList.add(isCorrect ? "correct" : "incorrect");
+    if (!isCorrect) {
       allButtons.forEach((b) => {
         if (b.textContent === correct) b.classList.add("correct");
       });
+    }
+
+    recordAndAdvance(isCorrect, person, question, correct, chosen);
+  }
+
+  function submitTyped() {
+    if (locked) return;
+    const raw = typeInput.value.trim();
+    if (!raw) return;
+    locked = true;
+
+    const { person, question } = queue[qIndex];
+    const correct = person[question.field];
+    const isCorrect = normalize(raw) === normalize(correct);
+
+    typeInput.disabled = true;
+    typeInput.classList.add(isCorrect ? "correct" : "incorrect");
+    feedbackEl.hidden = false;
+    feedbackEl.textContent = isCorrect ? "Correct!" : `Correct answer: ${correct}`;
+
+    recordAndAdvance(isCorrect, person, question, correct, raw);
+  }
+
+  function recordAndAdvance(isCorrect, person, question, correct, chosen) {
+    if (isCorrect) {
+      score++;
+    } else {
+      missed.push({ person, field: question.field, correct, chosen });
     }
 
     setTimeout(() => {
@@ -138,7 +193,7 @@ const Quiz = (() => {
         const line = Utils.el(
           "p",
           "quiz-missed-line",
-          `${Utils.fullName(m.person)} — ${m.field}: ${m.correct} (you picked ${m.chosen})`
+          `${Utils.fullName(m.person)} — ${m.field}: ${m.correct} (you said ${m.chosen})`
         );
         missedList.appendChild(line);
       }

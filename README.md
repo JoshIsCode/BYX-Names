@@ -41,9 +41,10 @@ later (e.g. once a new test range is announced), add an entry to
   left off" button next time. A "Reset progress" button clears it all
   and starts fresh.
 - **Test** — quiz mode. Shows a face and asks for first name, last
-  name, major, housing, and hometown (multiple choice), then moves to
-  the next person. Choose a short round or the whole roster, and get a
-  score + missed-answer review at the end.
+  name, major, housing, and hometown, then moves to the next person.
+  Choose a short round or the whole roster, answer as multiple choice
+  or type the answers yourself, and get a score + missed-answer
+  review at the end.
 - **Match** — a matching game: tap a face, then tap the name you
   think goes with it. Pick a round size and start a new round anytime.
 - **List** — a plain, searchable, sortable reference table of
