@@ -12,6 +12,7 @@ const Scope = (() => {
   const RANGES = {
     all: { label: "Everyone (72)", from: null, to: null },
     test36: { label: "Sanders → Whitefield (36) — test range", from: 1, to: 36 },
+    back36: { label: "Hernandez → Priebe (36) — the other 36", from: 37, to: 72 },
   };
 
   const KEY = "byx-scope";

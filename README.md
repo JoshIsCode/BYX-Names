@@ -11,8 +11,9 @@ can see it. See [Access & hosting](#access--hosting) below.
 ## Studying a subset
 
 The **Studying:** dropdown at the top applies to every mode at once —
-"Everyone" or "Sanders → Whitefield (36) — test range" (ids 1–36 in
-`js/data.js`). It's remembered per-browser. To add another named range
+"Everyone", "Sanders → Whitefield (36) — test range" (ids 1–36 in
+`js/data.js`), or "Hernandez → Priebe (36) — the other 36" (ids
+37–72). It's remembered per-browser. To add another named range
 later (e.g. once a new test range is announced), add an entry to
 `RANGES` in `js/scope.js` and a matching `<option>` in `index.html`'s
 `#scope-select`.
