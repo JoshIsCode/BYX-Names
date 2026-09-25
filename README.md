@@ -45,8 +45,12 @@ later (e.g. once a new test range is announced), add an entry to
   Choose a short round or the whole roster, answer as multiple choice
   or type the answers yourself, and get a score + missed-answer
   review at the end.
-- **Match** — a matching game: tap a face, then tap the name you
-  think goes with it. Pick a round size and start a new round anytime.
+- **Match** — a matching game: tap a face, then tap the info you
+  think goes with it — name, major, housing, or hometown. Pick a
+  round size and what to match on, and start a new round anytime.
+  (When matching on major/housing/hometown, only one person per
+  distinct value is included in a round, so no two tiles ever show
+  the same text.)
 - **List** — a plain, searchable, sortable reference table of
   everyone's info, for quick lookup or old-school studying.
 

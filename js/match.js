@@ -1,12 +1,16 @@
 /**
- * Match mode: a matching game. Click a face, then click the name you
- * think belongs to it. Correct pairs lock in green; wrong guesses
- * flash red and reset. A fresh round can be started at any time.
+ * Match mode: a matching game. Click a face, then click the info you
+ * think belongs to it — name, major, housing, or hometown. Correct
+ * pairs lock in green; wrong guesses flash red and reset. A fresh
+ * round can be started at any time.
  */
 
 const Match = (() => {
-  let container, facesCol, namesCol, statusEl;
+  const FIELD_LABELS = { name: "name", major: "major", housing: "housing", hometown: "hometown" };
+
+  let container, facesCol, namesCol, statusEl, hintEl;
   let roundPeople = [];
+  let matchField = "name";
   let selectedFace = null; // { id, el }
   let matchedCount = 0;
   let attempts = 0;
@@ -16,6 +20,7 @@ const Match = (() => {
     facesCol = document.getElementById("match-faces");
     namesCol = document.getElementById("match-names");
     statusEl = document.getElementById("match-status");
+    hintEl = document.getElementById("match-hint");
 
     document.getElementById("match-new-round").addEventListener("click", newRound);
     newRound();
@@ -26,8 +31,33 @@ const Match = (() => {
     return input ? parseInt(input.value, 10) : 8;
   }
 
+  function selectedField() {
+    const input = document.querySelector('input[name="match-field"]:checked');
+    return input ? input.value : "name";
+  }
+
+  function tileText(person) {
+    return matchField === "name" ? Utils.fullName(person) : person[matchField];
+  }
+
+  // For anything other than name, several people can share the same
+  // value (same major, housing hall, or hometown) — pick at most one
+  // person per distinct value so no two tiles ever show the same text.
+  function poolForField(field) {
+    const all = Scope.getPeople();
+    if (field === "name") return all;
+    const byValue = new Map();
+    for (const p of Utils.shuffle(all)) {
+      if (!byValue.has(p[field])) byValue.set(p[field], p);
+    }
+    return [...byValue.values()];
+  }
+
   function newRound() {
-    const pool = Scope.getPeople();
+    matchField = selectedField();
+    hintEl.textContent = `Tap a face, then tap the ${FIELD_LABELS[matchField]} you think matches.`;
+
+    const pool = poolForField(matchField);
     const size = Math.min(roundSize(), pool.length);
     roundPeople = Utils.shuffle(pool).slice(0, size);
     selectedFace = null;
@@ -53,7 +83,7 @@ const Match = (() => {
     }
 
     for (const person of nameOrder) {
-      const card = Utils.el("button", "match-tile match-name-tile", Utils.fullName(person));
+      const card = Utils.el("button", "match-tile match-name-tile", tileText(person));
       card.type = "button";
       card.dataset.id = person.id;
       card.addEventListener("click", () => selectName(card, person));
@@ -85,6 +115,7 @@ const Match = (() => {
         statusEl.textContent = `Round complete! ${roundPeople.length} matched in ${attempts} attempts. 🎉`;
       }
     } else {
+      updateStatus();
       card.classList.add("wrong");
       selectedFace.el.classList.add("wrong");
       setTimeout(() => {
