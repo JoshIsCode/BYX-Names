@@ -28,11 +28,15 @@ const Flashcards = (() => {
       }
     });
 
-    reset();
+    order = Scope.getPeople().map((p) => p.id);
+    index = 0;
+    render();
   }
 
-  function reset() {
-    order = Roster.people().map((p) => p.id);
+  // Re-pull the deck from the current study-set scope (called when the
+  // scope changes) without re-attaching the event listeners init() set up.
+  function refresh() {
+    order = Scope.getPeople().map((p) => p.id);
     index = 0;
     flipped = false;
     render();
@@ -57,7 +61,7 @@ const Flashcards = (() => {
   }
 
   function render() {
-    const person = Roster.people().find((p) => p.id === order[index]);
+    const person = Scope.findById(order[index]);
     faceSlot.innerHTML = "";
     detailsSlot.innerHTML = "";
     cardEl.classList.toggle("flipped", flipped);
@@ -70,7 +74,7 @@ const Flashcards = (() => {
       detailsSlot.hidden = true;
     } else {
       detailsSlot.appendChild(Utils.el("h3", "flashcard-name", Utils.fullName(person)));
-      for (const { field, label } of Roster.detailFields(person)) {
+      for (const { field, label } of Scope.detailFields(person)) {
         detailsSlot.appendChild(detailLine(label, person[field]));
       }
       faceSlot.hidden = true;
@@ -87,5 +91,5 @@ const Flashcards = (() => {
     return line;
   }
 
-  return { init, reset };
+  return { init, refresh };
 })();

@@ -31,17 +31,6 @@ const ListView = (() => {
     render();
   }
 
-  function reset() {
-    // A group with no details (the actives) sorts by name, since the
-    // column it was sorted on is about to disappear.
-    if (sortField !== "name" && !Roster.groupDetailFields().some((f) => f.field === sortField)) {
-      sortField = "name";
-      sortAsc = true;
-    }
-    updateSortIndicators();
-    render();
-  }
-
   function updateSortIndicators() {
     document.querySelectorAll("#list-table th[data-field]").forEach((th) => {
       th.classList.toggle("sort-asc", th.dataset.field === sortField && sortAsc);
@@ -50,19 +39,24 @@ const ListView = (() => {
   }
 
   function render() {
-    // Only show detail columns somebody in this group actually has.
-    const fields = Roster.groupDetailFields();
+    // Only show detail columns somebody in this scope actually has, and
+    // don't leave the table sorted on a column that just disappeared.
+    const fields = Scope.scopeFields();
+    if (sortField !== "name" && !fields.some((f) => f.field === sortField)) {
+      sortField = "name";
+      sortAsc = true;
+    }
     document.querySelectorAll("#list-table th[data-field]").forEach((th) => {
       th.hidden = th.dataset.field !== "name" && !fields.some((f) => f.field === th.dataset.field);
     });
-    document.getElementById("list-swipe-hint").hidden = fields.length === 0;
+    updateSortIndicators();
 
     const q = search.value.trim().toLowerCase();
-    let people = Roster.people().filter((p) => Roster.matches(p, q));
+    let people = Scope.getPeople().filter((p) => Scope.matches(p, q));
 
     people = people.slice().sort((a, b) => {
-      // In "Everyone" the actives have no major/housing/hometown, so a
-      // detail sort has to tolerate a missing value.
+      // In a mixed scope the actives have no major/housing/hometown, so
+      // a detail sort has to tolerate a missing value.
       const av = (sortField === "name" ? Utils.fullName(a) : a[sortField] || "").toLowerCase();
       const bv = (sortField === "name" ? Utils.fullName(b) : b[sortField] || "").toLowerCase();
       return av < bv ? -1 : av > bv ? 1 : 0;
@@ -89,5 +83,5 @@ const ListView = (() => {
     }
   }
 
-  return { init, reset };
+  return { init, render };
 })();

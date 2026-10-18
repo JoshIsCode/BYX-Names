@@ -39,7 +39,7 @@ const Gallery = (() => {
   function render() {
     grid.innerHTML = "";
     const q = search.value.trim().toLowerCase();
-    const people = Roster.people().filter((p) => Roster.matches(p, q));
+    const people = Scope.getPeople().filter((p) => Scope.matches(p, q));
 
     if (people.length === 0) {
       grid.appendChild(Utils.el("p", "empty-state", "No one matches that search."));
@@ -67,7 +67,7 @@ const Gallery = (() => {
     body.appendChild(label);
 
     // Actives are face-to-name only, so there may be nothing to expand.
-    const fields = Roster.detailFields(person);
+    const fields = Scope.detailFields(person);
     if (fields.length === 0) {
       card.classList.add("no-details");
       card.removeAttribute("aria-expanded");
@@ -97,5 +97,5 @@ const Gallery = (() => {
     return row;
   }
 
-  return { init, render, reset: render };
+  return { init, render };
 })();

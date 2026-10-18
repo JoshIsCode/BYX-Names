@@ -1,11 +1,7 @@
 /**
- * App shell: wires up the roster-group switch and the mode tabs, and
+ * App shell: wires up the mode tabs, the study-set scope selector, and
  * initializes each mode module once, on first visit, to keep things
  * fast and simple.
- *
- * Called by js/auth.js once the password gate is passed and every
- * script has loaded — not on DOMContentLoaded, since that has
- * already fired by the time this file is dynamically loaded.
  */
 
 function initApp() {
@@ -16,6 +12,7 @@ function initApp() {
   const modules = {
     gallery: Gallery,
     flashcards: Flashcards,
+    learn: Learn,
     quiz: Quiz,
     match: Match,
     list: ListView,
@@ -37,55 +34,54 @@ function initApp() {
     tab.addEventListener("click", () => activate(tab.dataset.mode));
   });
 
-  buildGroupTabs();
-  applyGroupCopy();
+  // Study-set scope: one dropdown, shared across every mode. Options
+  // come from Scope.ranges() so the counts can't drift from the data.
+  const scopeSelect = document.getElementById("scope-select");
+  for (const [key, range] of Object.entries(Scope.ranges())) {
+    const option = Utils.el("option", null, `${range.label} (${Scope.peopleIn(key).length})`);
+    option.value = key;
+    scopeSelect.appendChild(option);
+  }
+  scopeSelect.value = Scope.get();
+  scopeSelect.addEventListener("change", () => Scope.set(scopeSelect.value));
 
-  Roster.onChange(() => {
-    applyGroupCopy();
-    // Modes that have never been opened pick the new group up in init().
-    initialized.forEach((mode) => modules[mode].reset());
+  Scope.onChange(() => {
+    applyScopeCopy();
+    // Gallery/Flashcards/Match/List show a live view as soon as their
+    // tab is opened, so re-render them now if they've been visited.
+    // Quiz only reads the scope when you press Start, so it doesn't
+    // need an explicit refresh — the next round just picks it up.
+    // Learn is the same, except for the mastery count on its setup
+    // screen, which is per-scope and would otherwise read stale.
+    if (initialized.has("gallery")) Gallery.render();
+    if (initialized.has("flashcards")) Flashcards.refresh();
+    if (initialized.has("match")) Match.refresh();
+    if (initialized.has("list")) ListView.render();
+    if (initialized.has("learn")) Learn.refresh();
   });
+
+  applyScopeCopy();
 
   const saved = localStorage.getItem("byx-mode");
   activate(saved && modules[saved] ? saved : "gallery");
 }
 
-function buildGroupTabs() {
-  const nav = document.getElementById("group-tabs");
-  for (const group of Roster.groups()) {
-    const btn = Utils.el("button", "group-tab");
-    btn.type = "button";
-    btn.dataset.group = group.key;
-    btn.appendChild(Utils.el("span", "group-tab-label", group.label));
-    btn.appendChild(Utils.el("span", "group-tab-count", String(group.people.length)));
-    btn.addEventListener("click", () => Roster.setGroup(group.key));
-    nav.appendChild(btn);
-  }
-}
-
 /**
- * Keeps the wording honest for the group on screen: the actives roster
- * is face-to-name only, so nothing should promise majors or hometowns.
+ * Keeps the wording honest for the scope on screen: the actives are
+ * face-to-name only, so nothing should promise majors or hometowns
+ * when they're the ones being studied.
  */
-function applyGroupCopy() {
-  const group = Roster.group();
-  const namesOnly = Roster.namesOnly();
-  const fields = Roster.groupDetailFields();
+function applyScopeCopy() {
+  const namesOnly = Scope.namesOnly();
+  const fields = Scope.scopeFields();
+  const fieldList = fields.map((f) => f.label.toLowerCase()).join(", ");
 
-  document.querySelectorAll(".group-tab").forEach((tab) => {
-    const active = tab.dataset.group === group.key;
-    tab.classList.toggle("active", active);
-    tab.setAttribute("aria-pressed", String(active));
-  });
-
-  document.getElementById("roster-count").textContent = group.people.length;
+  document.getElementById("roster-count").textContent = Scope.getPeople().length;
   document.getElementById("roster-blurb").textContent = namesOnly
     ? "learn faces and names"
-    : "learn names, majors, housing & hometowns";
+    : `learn names, ${joinList(fields.map((f) => f.plural), "&")}`;
 
-  const searchPlaceholder = namesOnly
-    ? "Search names…"
-    : `Search name, ${fields.map((f) => f.label.toLowerCase()).join(", ")}…`;
+  const searchPlaceholder = namesOnly ? "Search names…" : `Search name, ${fieldList}…`;
   document.getElementById("gallery-search").placeholder = searchPlaceholder;
   document.getElementById("list-search").placeholder = searchPlaceholder;
 
@@ -93,9 +89,42 @@ function applyGroupCopy() {
     ? "Photo and name only for the actives — there's nothing more to open."
     : "Tap a card to open it — tap again to close. Multiple can stay open at once.";
 
+  document.getElementById("list-swipe-hint").hidden = namesOnly;
+
+  document.getElementById("learn-setup-hint").textContent = namesOnly
+    ? "See a photo and name whose face it is — sometimes multiple choice, sometimes typed. " +
+      "Cards you miss come back around until you've got them (typed answers need a correct " +
+      "retype to move on) — then it's on to the next set. Anything you get right on the first " +
+      "try is remembered, so it won't come back around next time you study."
+    : "See a photo, then answer questions about their name, major, housing, or hometown — " +
+      "sometimes multiple choice, sometimes typed. Cards you miss come back around until " +
+      "you've got them (typed answers need a correct retype to move on) — then it's on to the " +
+      "next set. Anything you get right on the first try is remembered, so it won't come back " +
+      "around next time you study.";
+
   document.getElementById("quiz-setup-hint").textContent = namesOnly
-    ? "For each person you'll be asked their first name and last name."
-    : `For each person you'll be asked their first name, last name, ${fields
-        .map((f) => f.label.toLowerCase())
-        .join(", ")}.`;
+    ? "For each person you'll be asked their first name and last name — as multiple choice, or typed out yourself."
+    : `For each person you'll be asked their first name, last name, ${joinList(
+        fields.map((f) => f.label.toLowerCase()),
+        "and"
+      )} — as multiple choice, or typed out yourself.`;
+
+  // Matching on a detail nobody in this scope has would deal an empty
+  // board, so those choices are only offered when they'd work.
+  document.querySelectorAll('input[name="match-field"]').forEach((input) => {
+    const usable = input.value === "name" || fields.some((f) => f.field === input.value);
+    input.disabled = !usable;
+    input.closest("label").classList.toggle("choice-disabled", !usable);
+    if (!usable && input.checked) {
+      document.querySelector('input[name="match-field"][value="name"]').checked = true;
+    }
+  });
 }
+
+/** ["a", "b", "c"] -> "a, b & c" (or "a, b and c"). */
+function joinList(items, conjunction) {
+  if (items.length < 2) return items.join("");
+  return `${items.slice(0, -1).join(", ")} ${conjunction} ${items[items.length - 1]}`;
+}
+
+initApp();

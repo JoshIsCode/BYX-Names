@@ -4,22 +4,35 @@ A simple, mobile-friendly web app for learning everyone's name, major,
 housing, and hometown. No build step, no dependencies — just open
 `index.html` (or serve the folder) in a browser.
 
-Two rosters live side by side, picked with the switch under the title:
+This repo contains real names and photos of pledge class members and
+actives — there's no password or login, so anyone with the link (or
+repo access) can see it. See [Access & hosting](#access--hosting)
+below.
 
-- **Pledge Class** (72) — full details: name, major, housing, hometown.
-- **Actives** (116) — face-to-name only; that's all the source deck had.
-- **Everyone** (188) — both at once.
+## Studying a subset
 
-Every mode works with either, and anything that depends on details
-(the gallery's expandable cards, the list's columns, the test's
-major/housing/hometown questions) simply drops out for people who
-don't have them.
+The **Studying:** dropdown at the top applies to every mode at once:
 
-This repo contains real names and photos, so the deployed site sits
-behind a password gate (see [Access & hosting](#access--hosting)
-below) — but the underlying repo, and anything in it, is only as
-private as GitHub lets it be. Don't treat the password as real
-security.
+| Option | Who |
+| --- | --- |
+| Everyone | both rosters (188) |
+| Pledge class | the pledge class (72) |
+| Sanders → Whitefield — test range | pledge ids 1–36 |
+| Hernandez → Priebe — the other 36 | pledge ids 37–72 |
+| Actives | the actives (116) |
+
+It's remembered per-browser. The dropdown is built from `RANGES` in
+`js/scope.js`, counts included, so adding another named range later
+(e.g. once a new test range is announced) means adding one entry
+there and nothing else.
+
+The two rosters hold different amounts of information: the pledge
+class has major, housing, and hometown; the actives are face-to-name
+only. Anything that depends on those details — the gallery's
+expandable cards, the list's columns, Learn/Test questions about a
+major, Match's "match with" choices — quietly drops out for people
+who don't have them, so an actives-only scope is purely faces and
+names.
 
 ## Modes
 
@@ -31,18 +44,38 @@ security.
 - **Flashcards** — one person at a time, photo only on the front so
   you can test yourself. Tap the card to flip and reveal the name and
   details. Step through with Previous/Next or shuffle the deck.
+- **Learn** — Quizlet-style, in small batches: see a photo, then
+  answer a question about their name, major, housing, or hometown —
+  a random mix of multiple choice and typed-answer questions,
+  auto-graded (typed name answers need the full first and last name).
+  A missed typed question requires correctly retyping the answer
+  before it will move on. Missed questions come back around later in
+  the same set; once you've gotten everyone right, move to the next
+  set. Ends with a summary of anyone who took more than one try.
+  Progress is remembered per-browser: anything answered right on the
+  first try is marked mastered and won't come up again in a future
+  session, and closing the tab mid-set offers a "Resume where you
+  left off" button next time. A "Reset progress" button clears it all
+  and starts fresh.
 - **Test** — quiz mode. Shows a face and asks for first name, last
-  name, major, housing, and hometown (multiple choice), then moves to
-  the next person. Choose a short round or the whole roster, and get a
-  score + missed-answer review at the end.
-- **Match** — a matching game: tap a face, then tap the name you
-  think goes with it. Pick a round size and start a new round anytime.
+  name, major, housing, and hometown, then moves to the next person.
+  Choose a short round or the whole roster, answer as multiple choice
+  or type the answers yourself, and get a score + missed-answer
+  review at the end.
+- **Match** — a matching game: tap a face, then tap the info you
+  think goes with it — name, major, housing, or hometown. Pick a
+  round size and what to match on, and start a new round anytime.
+  (When matching on major/housing/hometown, only one person per
+  distinct value is included in a round, so no two tiles ever show
+  the same text.)
 - **List** — a plain, searchable, sortable reference table of
-  everyone's info, for quick lookup or old-school studying.
+  everyone's info, for quick lookup or old-school studying. Columns
+  nobody in the current study set has (the actives' major, housing,
+  and hometown) are hidden instead of sitting there empty.
 
 ## Roster data
 
-Two files, one per group, combined by `js/roster.js`:
+Two files, one per roster, combined by `js/scope.js`:
 
 | File | Array | Who | Photos |
 | --- | --- | --- | --- |
@@ -121,18 +154,14 @@ any static server, e.g.:
 python3 -m http.server 8000
 ```
 
-Then visit `http://localhost:8000` — you'll need the password (see
-below) since the whole app, including its data and photos, only loads
-after it's entered.
+Then visit `http://localhost:8000`.
 
 ## Access & hosting
 
-The site is gated by a password screen (`js/auth.js`) before anything
-in the roster — script, data, or photos — is even requested. This is
-a casual deterrent, not real security: it's a static site with no
-server, so anyone who opens devtools can still get at the underlying
-files. Change the shipped placeholder password before sharing the
-link — instructions are in the comment at the top of `js/auth.js`.
+There's no password or login — the app loads straight in, for anyone
+with the link. A `noindex`/`nofollow` tag keeps it out of search
+results, but that's not access control, just a courtesy against
+accidental discovery.
 
 A GitHub Actions workflow (`.github/workflows/deploy-pages.yml`)
 publishes this site to GitHub Pages automatically on every push to
@@ -142,9 +171,12 @@ publishes this site to GitHub Pages automatically on every push to
   repo + Pages needs GitHub Pro or an org on Team/Enterprise).
 - **The published site is a public URL either way** — repo privacy
   doesn't restrict who can load the deployed Pages site, only who can
-  browse the repo itself. The password gate above is what actually
-  keeps casual visitors out; a `noindex` tag keeps it out of search
-  results.
+  browse the repo itself.
+
+If you want real access control back, the previous password-gate
+implementation (a client-side SHA-256 check before the roster's
+script/data/photos ever load) is still in git history — see the
+`js/auth.js` file as it existed before this was removed.
 
 One-time setup (repo owner only), once you've decided on repo
 visibility: go to **Settings → Pages** and, under **Build and

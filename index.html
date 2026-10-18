@@ -9,28 +9,21 @@
 </head>
 <body>
 
-<div id="auth-gate" class="auth-gate">
-  <form id="auth-form" class="auth-form">
-    <h1>BYX Names</h1>
-    <p class="hint">Enter the password to view the roster.</p>
-    <input id="auth-password" type="password" autocomplete="current-password" placeholder="Password" />
-    <button type="submit" class="btn btn-primary">Unlock</button>
-    <p id="auth-error" class="auth-error" hidden>Wrong password — try again.</p>
-  </form>
-</div>
-
-<div id="app-root" hidden>
-
 <header class="app-header">
   <h1>BYX Names</h1>
   <p class="app-subtitle"><span id="roster-count">0</span> people — <span id="roster-blurb">learn names, majors, housing &amp; hometowns</span></p>
 </header>
 
-<nav id="group-tabs" class="group-tabs" aria-label="Who to study"></nav>
+<div class="scope-bar">
+  <label for="scope-select">Studying:</label>
+  <!-- Options are built from Scope.ranges() in js/main.js. -->
+  <select id="scope-select"></select>
+</div>
 
 <nav class="mode-tabs" aria-label="Learning mode">
   <button class="mode-tab" data-mode="gallery" type="button">Gallery</button>
   <button class="mode-tab" data-mode="flashcards" type="button">Flashcards</button>
+  <button class="mode-tab" data-mode="learn" type="button">Learn</button>
   <button class="mode-tab" data-mode="quiz" type="button">Test</button>
   <button class="mode-tab" data-mode="match" type="button">Match</button>
   <button class="mode-tab" data-mode="list" type="button">List</button>
@@ -67,17 +60,81 @@
     </div>
   </section>
 
+  <!-- ================= LEARN MODE (Quizlet-style, small sets) ================= -->
+  <section id="mode-learn" class="mode-panel" hidden>
+
+    <div id="learn-setup" class="quiz-setup">
+      <h2>Learn in small sets</h2>
+      <p id="learn-setup-hint" class="hint">
+        See a photo, then answer questions about their name, major,
+        housing, or hometown — sometimes multiple choice, sometimes
+        typed. Cards you miss come back around until you've got them
+        (typed answers need a correct retype to move on) — then it's
+        on to the next set. Anything you get right on the first try is
+        remembered, so it won't come back around next time you study.
+      </p>
+      <p id="learn-mastery-stat" class="hint"></p>
+      <button id="learn-resume" class="btn btn-primary" type="button" hidden>Resume where you left off</button>
+
+      <fieldset class="quiz-size-choice">
+        <legend>Set size</legend>
+        <label><input type="radio" name="learn-size" value="5" checked /> 5</label>
+        <label><input type="radio" name="learn-size" value="8" /> 8</label>
+        <label><input type="radio" name="learn-size" value="12" /> 12</label>
+      </fieldset>
+      <button id="learn-start" class="btn btn-primary" type="button">Start Learning</button>
+      <button id="learn-reset-progress" class="btn quiz-abandon" type="button" hidden>Reset progress</button>
+    </div>
+
+    <div id="learn-play" class="quiz-play" hidden>
+      <div class="quiz-progress-track"><div id="learn-progress-bar" class="quiz-progress-bar"></div></div>
+      <p id="learn-progress-label" class="hint"></p>
+
+      <div id="learn-face" class="quiz-face"></div>
+      <p id="learn-name-reveal" class="quiz-name-reveal"></p>
+      <p id="learn-prompt" class="quiz-prompt"></p>
+
+      <div id="learn-mc" class="quiz-options" hidden></div>
+
+      <form id="learn-type-form" class="learn-type-form" hidden>
+        <input id="learn-type-input" class="learn-type-input" type="text" autocomplete="off" autocapitalize="words" />
+        <button class="btn btn-primary" type="submit">Check</button>
+      </form>
+      <p id="learn-feedback" class="learn-feedback" hidden></p>
+    </div>
+
+    <div id="learn-round-done" class="quiz-summary" hidden>
+      <h2 id="learn-round-heading">Set complete!</h2>
+      <p id="learn-round-sub" class="hint"></p>
+      <button id="learn-next-round" class="btn btn-primary" type="button">Next Set</button>
+    </div>
+
+    <div id="learn-summary" class="quiz-summary" hidden>
+      <h2>All done!</h2>
+      <p id="learn-summary-sub" class="hint"></p>
+      <div id="learn-extra-practice" class="quiz-missed-list"></div>
+      <button id="learn-restart" class="btn btn-primary" type="button">Start Over</button>
+    </div>
+
+    <button id="learn-abandon" class="btn quiz-abandon" type="button" title="Back to setup">Back to setup</button>
+  </section>
+
   <!-- ================= TEST / QUIZ MODE ================= -->
   <section id="mode-quiz" class="mode-panel" hidden>
 
     <div id="quiz-setup" class="quiz-setup">
       <h2>Test yourself</h2>
-      <p id="quiz-setup-hint" class="hint">For each person you'll be asked their first name, last name, major, housing, and hometown.</p>
+      <p id="quiz-setup-hint" class="hint">For each person you'll be asked their first name, last name, major, housing, and hometown — as multiple choice, or typed out yourself.</p>
       <fieldset class="quiz-size-choice">
         <legend>How many people?</legend>
         <label><input type="radio" name="quiz-size" value="5" checked /> 5</label>
         <label><input type="radio" name="quiz-size" value="10" /> 10</label>
         <label><input type="radio" name="quiz-size" value="all" /> Everyone</label>
+      </fieldset>
+      <fieldset class="quiz-size-choice">
+        <legend>How should we answer?</legend>
+        <label><input type="radio" name="quiz-answer-mode" value="mc" checked /> Multiple choice</label>
+        <label><input type="radio" name="quiz-answer-mode" value="typed" /> Typed</label>
       </fieldset>
       <button id="quiz-start" class="btn btn-primary" type="button">Start Test</button>
     </div>
@@ -90,6 +147,12 @@
       <p id="quiz-name-reveal" class="quiz-name-reveal"></p>
       <p id="quiz-prompt" class="quiz-prompt"></p>
       <div id="quiz-options" class="quiz-options"></div>
+
+      <form id="quiz-type-form" class="learn-type-form" hidden>
+        <input id="quiz-type-input" class="learn-type-input" type="text" autocomplete="off" autocapitalize="words" />
+        <button class="btn btn-primary" type="submit">Check</button>
+      </form>
+      <p id="quiz-feedback" class="learn-feedback" hidden></p>
     </div>
 
     <div id="quiz-summary" class="quiz-summary" hidden>
@@ -111,9 +174,16 @@
         <label><input type="radio" name="match-size" value="8" checked /> 8</label>
         <label><input type="radio" name="match-size" value="12" /> 12</label>
       </fieldset>
+      <fieldset class="quiz-size-choice">
+        <legend>Match with</legend>
+        <label><input type="radio" name="match-field" value="name" checked /> Name</label>
+        <label><input type="radio" name="match-field" value="major" /> Major</label>
+        <label><input type="radio" name="match-field" value="housing" /> Housing</label>
+        <label><input type="radio" name="match-field" value="hometown" /> Hometown</label>
+      </fieldset>
       <button id="match-new-round" class="btn" type="button">New Round</button>
     </div>
-    <p class="hint">Tap a face, then tap the name you think matches.</p>
+    <p id="match-hint" class="hint">Tap a face, then tap the name you think matches.</p>
     <p id="match-status" class="hint center"></p>
     <div class="match-board">
       <div id="match-faces" class="match-faces-grid"></div>
@@ -142,8 +212,16 @@
 
 </main>
 
-</div>
-
-<script src="js/auth.js"></script>
+<script src="js/data.js"></script>
+<script src="js/data-actives.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/scope.js"></script>
+<script src="js/gallery.js"></script>
+<script src="js/flashcards.js"></script>
+<script src="js/learn.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/match.js"></script>
+<script src="js/list.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>
