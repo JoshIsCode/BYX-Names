@@ -117,10 +117,11 @@ sensible default.
 
 ### Actives
 
-`js/data-actives.js` holds the actives, extracted from
-`raw/BYX Actives Test 2026.pptx` (one slide per person: a name and a
-photo, nothing else). Entries carry no major/housing/hometown, so they
-only need three fields:
+`js/data-actives.js` holds the actives, extracted from the
+"BYX Actives Test 2026" slide deck — one slide per person: a name and
+a photo, nothing else. (The deck itself isn't in the repo; it's 67 MB.)
+Entries carry no major/housing/hometown, so they only need three
+fields:
 
 ```js
 { id: 1001, firstName: "Jane", lastName: "Doe", photo: "assets/photos/actives/jane-doe.jpg" }
