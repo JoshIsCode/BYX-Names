@@ -28,8 +28,13 @@ const Flashcards = (() => {
       }
     });
 
-    order = PEOPLE.map((p) => p.id);
+    reset();
+  }
+
+  function reset() {
+    order = Roster.people().map((p) => p.id);
     index = 0;
+    flipped = false;
     render();
   }
 
@@ -52,7 +57,7 @@ const Flashcards = (() => {
   }
 
   function render() {
-    const person = PEOPLE.find((p) => p.id === order[index]);
+    const person = Roster.people().find((p) => p.id === order[index]);
     faceSlot.innerHTML = "";
     detailsSlot.innerHTML = "";
     cardEl.classList.toggle("flipped", flipped);
@@ -65,9 +70,9 @@ const Flashcards = (() => {
       detailsSlot.hidden = true;
     } else {
       detailsSlot.appendChild(Utils.el("h3", "flashcard-name", Utils.fullName(person)));
-      detailsSlot.appendChild(detailLine("Major", person.major));
-      detailsSlot.appendChild(detailLine("Housing", person.housing));
-      detailsSlot.appendChild(detailLine("Hometown", person.hometown));
+      for (const { field, label } of Roster.detailFields(person)) {
+        detailsSlot.appendChild(detailLine(label, person[field]));
+      }
       faceSlot.hidden = true;
       detailsSlot.hidden = false;
     }
@@ -82,5 +87,5 @@ const Flashcards = (() => {
     return line;
   }
 
-  return { init };
+  return { init, reset };
 })();

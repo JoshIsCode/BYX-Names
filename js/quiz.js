@@ -5,13 +5,22 @@
  */
 
 const Quiz = (() => {
-  const QUESTIONS = [
+  const NAME_QUESTIONS = [
     { field: "firstName", prompt: () => "What is this person's first name?", revealName: false },
     { field: "lastName", prompt: () => "What is this person's last name?", revealName: false },
+  ];
+
+  const DETAIL_QUESTIONS = [
     { field: "major", prompt: (p) => `What is ${Utils.fullName(p)}'s major?`, revealName: true },
     { field: "housing", prompt: (p) => `Where does ${Utils.fullName(p)} live?`, revealName: true },
     { field: "hometown", prompt: (p) => `Where is ${Utils.fullName(p)} from?`, revealName: true },
   ];
+
+  // Someone with no major/housing/hometown on file (every active) is only
+  // ever asked for their name.
+  function questionsFor(person) {
+    return [...NAME_QUESTIONS, ...DETAIL_QUESTIONS.filter((q) => person[q.field])];
+  }
 
   let setupEl, playEl, summaryEl;
   let queue = []; // list of { person, question }
@@ -40,14 +49,14 @@ const Quiz = (() => {
 
   function start() {
     const sizeChoice = document.querySelector('input[name="quiz-size"]:checked').value;
-    let people = Utils.shuffle(PEOPLE);
+    let people = Utils.shuffle(Roster.people());
     if (sizeChoice !== "all") {
       people = people.slice(0, Math.min(parseInt(sizeChoice, 10), people.length));
     }
 
     queue = [];
     for (const person of people) {
-      for (const question of QUESTIONS) {
+      for (const question of questionsFor(person)) {
         queue.push({ person, question });
       }
     }
@@ -79,7 +88,10 @@ const Quiz = (() => {
     document.getElementById("quiz-prompt").textContent = question.prompt(person);
 
     const correct = person[question.field];
-    const options = Utils.shuffle([correct, ...Utils.distractors(PEOPLE, question.field, correct, 3)]);
+    const options = Utils.shuffle([
+      correct,
+      ...Utils.distractors(Roster.people(), question.field, correct, 3),
+    ]);
 
     const optionsEl = document.getElementById("quiz-options");
     optionsEl.innerHTML = "";
@@ -145,5 +157,5 @@ const Quiz = (() => {
     }
   }
 
-  return { init };
+  return { init, reset: showSetup };
 })();

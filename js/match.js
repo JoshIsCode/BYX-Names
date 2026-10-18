@@ -27,8 +27,9 @@ const Match = (() => {
   }
 
   function newRound() {
-    const size = Math.min(roundSize(), PEOPLE.length);
-    roundPeople = Utils.shuffle(PEOPLE).slice(0, size);
+    const people = Roster.people();
+    const size = Math.min(roundSize(), people.length);
+    roundPeople = Utils.shuffle(people).slice(0, size);
     selectedFace = null;
     matchedCount = 0;
     attempts = 0;
@@ -97,5 +98,5 @@ const Match = (() => {
     statusEl.textContent = `Matched ${matchedCount} / ${roundPeople.length} — Attempts: ${attempts}`;
   }
 
-  return { init };
+  return { init, reset: newRound };
 })();

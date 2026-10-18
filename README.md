@@ -4,6 +4,17 @@ A simple, mobile-friendly web app for learning everyone's name, major,
 housing, and hometown. No build step, no dependencies — just open
 `index.html` (or serve the folder) in a browser.
 
+Two rosters live side by side, picked with the switch under the title:
+
+- **Pledge Class** (72) — full details: name, major, housing, hometown.
+- **Actives** (116) — face-to-name only; that's all the source deck had.
+- **Everyone** (188) — both at once.
+
+Every mode works with either, and anything that depends on details
+(the gallery's expandable cards, the list's columns, the test's
+major/housing/hometown questions) simply drops out for people who
+don't have them.
+
 This repo contains real names and photos, so the deployed site sits
 behind a password gate (see [Access & hosting](#access--hosting)
 below) — but the underlying repo, and anything in it, is only as
@@ -31,11 +42,21 @@ security.
 
 ## Roster data
 
+Two files, one per group, combined by `js/roster.js`:
+
+| File | Array | Who | Photos |
+| --- | --- | --- | --- |
+| `js/data.js` | `PEOPLE` | Pledge Class 2026, with details | `assets/photos/` |
+| `js/data-actives.js` | `ACTIVES` | Actives, name + photo only | `assets/photos/actives/` |
+
+If a photo is ever missing or fails to load, the app automatically
+falls back to a plain initials avatar, so nothing breaks.
+
+### Pledge class
+
 `js/data.js` holds the BYX Pledge Class 2026 roster (name, major,
 housing, hometown, photo) parsed from `BYX_Pledge_Class_2026.pdf`.
-Photos live in `assets/photos/`, resized/compressed for the web. If a
-photo is ever missing or fails to load, the app automatically falls
-back to a plain initials avatar, so nothing breaks.
+Photos live in `assets/photos/`, resized/compressed for the web.
 
 To update or correct an entry, edit its object in the `PEOPLE` array in
 `js/data.js` — each one follows this shape:
@@ -61,9 +82,35 @@ percentages by eye (`"50% 20%"` moves the visible crop window up,
 toward the top of the photo) or delete the field to fall back to a
 sensible default.
 
+### Actives
+
+`js/data-actives.js` holds the actives, extracted from
+`raw/BYX Actives Test 2026.pptx` (one slide per person: a name and a
+photo, nothing else). Entries carry no major/housing/hometown, so they
+only need three fields:
+
+```js
+{ id: 1001, firstName: "Jane", lastName: "Doe", photo: "assets/photos/actives/jane-doe.jpg" }
+```
+
+IDs start at 1001 so they can never collide with the pledge-class IDs.
+Adding `major`, `housing`, or `hometown` to an entry is enough to make
+that person's details show up everywhere — nothing else needs changing.
+
+These photos are casual shots (group photos, selfies, action shots)
+rather than posed roster pictures, so instead of nudging the crop in
+CSS the way the pledge entries do, the crop is **baked into the image**:
+each one was cropped to a 3:4 frame centred on the person's head
+(OpenCV's YuNet face detector, largest and most central face) when it
+was pulled out of the deck. That means no `facePos`/`faceZoom` on these
+entries, and a replacement photo just needs to be a head-and-shoulders
+crop to match. A handful of the slides are group photos where the
+subject is genuinely ambiguous — if a card shows the wrong person,
+re-crop that one photo by hand.
+
 > **Note:** this repo contains real names and photos of pledge class
-> members. Keep the repository private, and check with the group
-> before making it public.
+> members and actives. Keep the repository private, and check with the
+> group before making it public.
 
 ## Running locally
 

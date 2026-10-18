@@ -39,15 +39,7 @@ const Gallery = (() => {
   function render() {
     grid.innerHTML = "";
     const q = search.value.trim().toLowerCase();
-    const people = PEOPLE.filter((p) => {
-      if (!q) return true;
-      return (
-        Utils.fullName(p).toLowerCase().includes(q) ||
-        p.major.toLowerCase().includes(q) ||
-        p.housing.toLowerCase().includes(q) ||
-        p.hometown.toLowerCase().includes(q)
-      );
-    });
+    const people = Roster.people().filter((p) => Roster.matches(p, q));
 
     if (people.length === 0) {
       grid.appendChild(Utils.el("p", "empty-state", "No one matches that search."));
@@ -74,11 +66,19 @@ const Gallery = (() => {
     const label = Utils.el("div", "gallery-card-label", Utils.fullName(person));
     body.appendChild(label);
 
+    // Actives are face-to-name only, so there may be nothing to expand.
+    const fields = Roster.detailFields(person);
+    if (fields.length === 0) {
+      card.classList.add("no-details");
+      card.removeAttribute("aria-expanded");
+      return card;
+    }
+
     const details = Utils.el("div", "gallery-card-details");
     details.hidden = true;
-    details.appendChild(detailRow("Major", person.major));
-    details.appendChild(detailRow("Housing", person.housing));
-    details.appendChild(detailRow("Hometown", person.hometown));
+    for (const { field, label } of fields) {
+      details.appendChild(detailRow(label, person[field]));
+    }
     body.appendChild(details);
 
     card.addEventListener("click", () => {
@@ -97,5 +97,5 @@ const Gallery = (() => {
     return row;
   }
 
-  return { init, render };
+  return { init, render, reset: render };
 })();

@@ -31,6 +31,17 @@ const ListView = (() => {
     render();
   }
 
+  function reset() {
+    // A group with no details (the actives) sorts by name, since the
+    // column it was sorted on is about to disappear.
+    if (sortField !== "name" && !Roster.groupDetailFields().some((f) => f.field === sortField)) {
+      sortField = "name";
+      sortAsc = true;
+    }
+    updateSortIndicators();
+    render();
+  }
+
   function updateSortIndicators() {
     document.querySelectorAll("#list-table th[data-field]").forEach((th) => {
       th.classList.toggle("sort-asc", th.dataset.field === sortField && sortAsc);
@@ -39,20 +50,21 @@ const ListView = (() => {
   }
 
   function render() {
-    const q = search.value.trim().toLowerCase();
-    let people = PEOPLE.filter((p) => {
-      if (!q) return true;
-      return (
-        Utils.fullName(p).toLowerCase().includes(q) ||
-        p.major.toLowerCase().includes(q) ||
-        p.housing.toLowerCase().includes(q) ||
-        p.hometown.toLowerCase().includes(q)
-      );
+    // Only show detail columns somebody in this group actually has.
+    const fields = Roster.groupDetailFields();
+    document.querySelectorAll("#list-table th[data-field]").forEach((th) => {
+      th.hidden = th.dataset.field !== "name" && !fields.some((f) => f.field === th.dataset.field);
     });
+    document.getElementById("list-swipe-hint").hidden = fields.length === 0;
+
+    const q = search.value.trim().toLowerCase();
+    let people = Roster.people().filter((p) => Roster.matches(p, q));
 
     people = people.slice().sort((a, b) => {
-      const av = (sortField === "name" ? Utils.fullName(a) : a[sortField]).toLowerCase();
-      const bv = (sortField === "name" ? Utils.fullName(b) : b[sortField]).toLowerCase();
+      // In "Everyone" the actives have no major/housing/hometown, so a
+      // detail sort has to tolerate a missing value.
+      const av = (sortField === "name" ? Utils.fullName(a) : a[sortField] || "").toLowerCase();
+      const bv = (sortField === "name" ? Utils.fullName(b) : b[sortField] || "").toLowerCase();
       return av < bv ? -1 : av > bv ? 1 : 0;
     });
     if (!sortAsc) people.reverse();
@@ -61,7 +73,7 @@ const ListView = (() => {
     if (people.length === 0) {
       const row = Utils.el("tr");
       const cell = Utils.el("td", "empty-state", "No one matches that search.");
-      cell.colSpan = 4;
+      cell.colSpan = fields.length + 1;
       row.appendChild(cell);
       tbody.appendChild(row);
       return;
@@ -70,12 +82,12 @@ const ListView = (() => {
     for (const p of people) {
       const row = Utils.el("tr");
       row.appendChild(Utils.el("td", null, Utils.fullName(p)));
-      row.appendChild(Utils.el("td", null, p.major));
-      row.appendChild(Utils.el("td", null, p.housing));
-      row.appendChild(Utils.el("td", null, p.hometown));
+      for (const { field } of fields) {
+        row.appendChild(Utils.el("td", null, p[field] || "—"));
+      }
       tbody.appendChild(row);
     }
   }
 
-  return { init };
+  return { init, reset };
 })();

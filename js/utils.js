@@ -66,9 +66,10 @@ const Utils = (() => {
     return arr;
   }
 
-  // Pick `count` random unique wrong values for a field, excluding correct value.
+  // Pick `count` random unique wrong values for a field, excluding the
+  // correct value and anyone who has no value for that field at all.
   function distractors(people, field, correctValue, count) {
-    const pool = [...new Set(people.map((p) => p[field]).filter((v) => v !== correctValue))];
+    const pool = [...new Set(people.map((p) => p[field]).filter((v) => v && v !== correctValue))];
     return shuffle(pool).slice(0, count);
   }
 

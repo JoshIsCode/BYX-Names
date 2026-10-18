@@ -29,7 +29,9 @@ const UNLOCK_KEY = "byx-unlocked";
 // data and photos never touch the network (or the DOM) until then.
 const APP_SCRIPTS = [
   "js/data.js",
+  "js/data-actives.js",
   "js/utils.js",
+  "js/roster.js",
   "js/gallery.js",
   "js/flashcards.js",
   "js/quiz.js",

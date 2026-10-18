@@ -79,6 +79,43 @@ body {
 .app-header h1 { margin: 0; font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; }
 .app-subtitle { margin: 4px 0 0; color: var(--text-muted); font-size: 0.88rem; }
 
+/* Who to study: pledge class, actives, or everyone. A segmented control
+   rather than another pill row, so it reads as a different kind of choice
+   from the mode tabs directly below it. */
+.group-tabs {
+  display: flex;
+  gap: 2px;
+  width: min(460px, calc(100% - 32px));
+  margin: 4px auto 10px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+}
+.group-tab {
+  flex: 1 1 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+.group-tab-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.group-tab-count { font-size: 0.75rem; opacity: 0.75; font-variant-numeric: tabular-nums; }
+.group-tab.active {
+  background: var(--ink);
+  color: var(--ink-contrast);
+  font-weight: 600;
+}
+
 .mode-tabs {
   position: sticky;
   top: 0;
@@ -194,6 +231,9 @@ main {
   text-align: left;
 }
 .gallery-card.expanded { border-color: var(--text); }
+/* Face-to-name entries have nothing to reveal, so the card is a plain
+   label rather than something that looks tappable. */
+.gallery-card.no-details { cursor: default; }
 .gallery-card-photo {
   aspect-ratio: 4 / 3;
   flex-shrink: 0;
