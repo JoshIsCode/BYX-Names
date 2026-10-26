@@ -27,6 +27,8 @@ const Scope = (() => {
     test36: { label: "Sanders → Whitefield — test range", source: () => PEOPLE, from: 1, to: 36 },
     back36: { label: "Hernandez → Priebe — the other 36", source: () => PEOPLE, from: 37, to: 72 },
     actives: { label: "Actives", source: () => ACTIVES },
+    activesA: { label: "Actives: Ty Boatright → Jake Boatright", source: () => ACTIVES, from: 1001, to: 1065 },
+    activesB: { label: "Actives: Braden → Zapoli — the rest", source: () => ACTIVES, from: 1066, to: 1116 },
   };
 
   const FIELDS = [

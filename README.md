@@ -20,6 +20,8 @@ The **Studying:** dropdown at the top applies to every mode at once:
 | Sanders → Whitefield — test range | pledge ids 1–36 |
 | Hernandez → Priebe — the other 36 | pledge ids 37–72 |
 | Actives | the actives (116) |
+| Actives: Ty Boatright → Jake Boatright | active ids 1001–1065 (65) |
+| Actives: Braden → Zapoli — the rest | active ids 1066–1116 (51) |
 
 It's remembered per-browser. The dropdown is built from `RANGES` in
 `js/scope.js`, counts included, so adding another named range later
